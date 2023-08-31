@@ -32,6 +32,7 @@
         <cve>CVE-2023-35116</cve>
         <cve>CVE-2023-34462</cve>
         <cve>CVE-2023-39017</cve>
+        <cve>CVE-2023-34040</cve>
     </suppress>
     <suppress until = "2023-09-01">
         <notes><![CDATA[

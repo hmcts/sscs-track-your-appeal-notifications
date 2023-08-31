@@ -9,6 +9,7 @@ import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.model.PartyItemList.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.ByteArrayOutputStream;
@@ -30,6 +31,7 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.model.PartyItemList;
 
 public class LetterUtils {
 
@@ -197,12 +199,16 @@ public class LetterUtils {
     public static String getNameForSender(SscsCaseData sscsCaseData) {
         if (nonNull(sscsCaseData.getOriginalSender())) {
             final String originalSenderCode = sscsCaseData.getOriginalSender().getValue().getCode();
-            if (originalSenderCode.equalsIgnoreCase("appellant")) {
+            if (originalSenderCode.equalsIgnoreCase(APPELLANT.getCode())) {
                 return sscsCaseData.getAppeal().getAppellant().getName().getFullNameNoTitle();
-            } else if (originalSenderCode.equalsIgnoreCase("representative")) {
+            } else if (originalSenderCode.equalsIgnoreCase(PartyItemList.REPRESENTATIVE.getCode())) {
                 return SendNotificationHelper.getRepSalutation(sscsCaseData.getAppeal().getRep(), false);
-            } else if (originalSenderCode.equalsIgnoreCase("jointParty")) {
+            } else if (originalSenderCode.equalsIgnoreCase(PartyItemList.JOINT_PARTY.getCode())) {
                 return sscsCaseData.getJointParty().getName().getFullNameNoTitle();
+            } else if (originalSenderCode.equalsIgnoreCase(DWP.getCode())) {
+                return DWP.getLabel();
+            } else if (originalSenderCode.equalsIgnoreCase(HMCTS.getCode())) {
+                return HMCTS.getLabel();
             } else {
                 return getOtherPartyName(sscsCaseData)
                         .map(Name::getFullNameNoTitle).orElse("");

@@ -50,6 +50,7 @@ import java.util.Optional;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,6 +76,7 @@ import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
+@Slf4j
 @RunWith(JUnitParamsRunner.class)
 public class PersonalisationTest {
 
@@ -1823,9 +1825,85 @@ public class PersonalisationTest {
             .containsEntry(ENTITY_TYPE,"Appointee");
     }
 
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldProvideCorrectValuesForPtaGrantedValues() {
+        String date1 = LocalDate.now().toString();
+        String date2 = LocalDate.now().minusDays(10).toString();
+        SscsDocumentDetails document1 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                .documentDateAdded(date1)
+                .build();
+        SscsDocument sscsDocument1 = SscsDocument.builder().value(document1).build();
+
+        SscsDocumentDetails document2 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                .documentDateAdded(date2)
+                .build();
+        SscsDocument sscsDocument2 = SscsDocument.builder().value(document2).build();
+
+        DynamicListItem item = new DynamicListItem("appellant", "");
+        DynamicList originalSender = new DynamicList(item, List.of());
+
+        Appellant appellant = Appellant.builder().name(name).build();
+        Appeal appeal = Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).appellant(appellant)
+                .build();
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .sscsDocument(List.of(sscsDocument1, sscsDocument2))
+                .originalSender(originalSender)
+                .appeal(appeal)
+                .dwpState(DwpState.PERMISSION_TO_APPEAL_GRANTED)
+                .build();
+
+        SubscriptionWithType subscription = new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT,
+                appellant, appellant);
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(response)
+                .notificationEventType(PERMISSION_TO_APPEAL_GRANTED).build();
+        var result = personalisation.create(caseDataWrapper, subscription);
+
+        assertThat(result)
+                .containsEntry(IS_GRANTED, true)
+                .containsEntry(SENDER_NAME, name.getFullNameNoTitle())
+                .containsEntry(DECISION_DATE_LITERAL, date1);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldProvideCorrectValuesForPtaRefusedValues() {
+        String date = LocalDate.now().toString();
+        SscsDocumentDetails document1 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                .documentDateAdded(date)
+                .build();
+        SscsDocument sscsDocument = SscsDocument.builder().value(document1).build();
+
+        DynamicListItem item = new DynamicListItem("appellant", "");
+        DynamicList originalSender = new DynamicList(item, List.of());
+
+        Appellant appellant = Appellant.builder().name(name).build();
+        Appeal appeal = Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).appellant(appellant).build();
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).appeal(appeal)
+                .sscsDocument(List.of(sscsDocument))
+                .originalSender(originalSender)
+                .build();
+        SubscriptionWithType subscription = new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT,
+                appellant, appellant);
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(PERMISSION_TO_APPEAL_REFUSED).build();
+        var result = personalisation.create(caseDataWrapper, subscription);
+
+        assertThat(result)
+                .containsEntry(IS_GRANTED, false)
+                .containsEntry(SENDER_NAME, name.getFullNameNoTitle())
+                .containsEntry(DECISION_DATE_LITERAL, date);
+    }
+
     @Test
     public void givenASyaAppealWithHearingArrangements_setHearingArrangementsForTemplate() {
-
         List<String> arrangementList = new ArrayList<>();
 
         arrangementList.add("signLanguageInterpreter");
