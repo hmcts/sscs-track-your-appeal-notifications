@@ -2054,7 +2054,7 @@ public class PersonalisationTest {
                 .notificationEventType(CORRECTION_GRANTED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
         assertTrue((boolean) result.get(IS_GRANTED));
-        assertEquals(result.get(FINAL_DECISION_DATE), LocalDate.now());
+        assertEquals(result.get(FINAL_DECISION_DATE), LocalDate.now().format(DateTimeFormatter.ofPattern(FINAL_DECISION_DATE_FORMAT)));
     }
 
     @Test
