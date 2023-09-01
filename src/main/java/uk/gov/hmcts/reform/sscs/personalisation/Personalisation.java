@@ -313,14 +313,22 @@ public class Personalisation<E extends NotificationWrapper> {
                 personalisation.put(FINAL_DECISION_DATE, formattedDate);
             }
         }
-        log.info("Final decision date is");
-        log.info("Final decision date is");
-        log.info("Final decision date is");
-        log.info("Final decision date is");
-        log.info("Final decision date is");
-        log.info("Final decision date is");
-        log.info("Final decision date is");
-        log.info("Final decision date is");
+
+        for (int i = 0; i < NAME.length(); i++) {
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+            log.info("Final decision date is");
+        }
+
       
         boolean isGranted = isGranted(ccdResponse.getDwpState());
       
