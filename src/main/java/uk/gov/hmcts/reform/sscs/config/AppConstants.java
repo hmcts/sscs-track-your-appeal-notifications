@@ -13,7 +13,7 @@ public final class AppConstants {
     public static final String DWP_FIRST_TIER_AGENCY_GROUP_WELSH = "Grŵp Cynhaliaeth Plant";
     public static final String DWP_FULL_NAME = "Department for Work and Pensions";
     public static final String DWP_FULL_NAME_WELSH = "Adran Gwaith a Phensiynau";
-    public static final String FINAL_DECISION_DATE_FORMAT = "dd-MM-yyyy";
+    public static final String FINAL_DECISION_DATE_FORMAT = "dd/MM/yyyy";
     public static final String HEARING_TIME_FORMAT = "hh:mm a";
     public static final String HMRC_ACRONYM = "HMRC";
     public static final String HMRC_ACRONYM_WELSH = "CThEM";
