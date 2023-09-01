@@ -58,6 +58,7 @@ public class TopicConsumer {
                 return;
             }
 
+
             SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
                     caseData,
                     caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
