@@ -22,6 +22,7 @@ public class BundledNotificationsConfigTestIt extends AbstractNotificationConfig
     private static final Set<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES_IGNORED = EnumSet.of(
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
+        CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
