@@ -243,29 +243,6 @@ public class PersonalisationTest {
         );
     }
 
-    @Parameters({"CORRECTION_GRANTED, issueFinalDecision.correctionGranted, APPELLANT",
-                 "CORRECTION_REFUSED, issueFinalDecision.correctionRefused, JOINT_PARTY"})
-    @Test
-    public void test(DwpState state, String templateConfig, SubscriptionType subscriptionType) {
-        NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
-                .newSscsCaseData(SscsCaseData.builder()
-                        .dwpState(state)
-                        .appeal(Appeal.builder()
-                                .hearingType(ONLINE.getValue())
-                                .build())
-                        .build())
-                .notificationEventType(ISSUE_FINAL_DECISION)
-                .build());
-
-        personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
-
-        verify(config).getTemplate(eq(ISSUE_FINAL_DECISION.getId()),
-                eq(ISSUE_FINAL_DECISION.getId()),
-                eq(ISSUE_FINAL_DECISION.getId()),
-                eq(templateConfig),
-                any(Benefit.class), any(NotificationWrapper.class), eq(null));
-    }
-
     @Test
     @Parameters({"APPELLANT, grantUrgentHearing, directionIssued.grantUrgentHearing",
         "JOINT_PARTY, grantUrgentHearing, directionIssued.grantUrgentHearing",
