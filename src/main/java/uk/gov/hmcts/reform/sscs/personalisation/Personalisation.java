@@ -629,7 +629,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType(), notificationWrapper.getNewSscsCaseData());
 
-        log.info("Docmosis template name: {}",docmosisTemplateName);
+        log.info("Docmosis template name: {}", docmosisTemplateName);
 
         return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
                 benefit, notificationWrapper, notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom());
@@ -648,7 +648,6 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String getDocmosisTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType, SscsCaseData caseData) {
-
         if (isNull(subscriptionType)) {
             return notificationEventType.getId();
         }
@@ -664,23 +663,11 @@ public class Personalisation<E extends NotificationWrapper> {
             return getSubscriptionTemplateNameWithDirection(notificationEventType, directionType, subscriptionType);
         }
 
-        DwpState dwpState = caseData.getDwpState();
-        if (isCorrectionState(notificationEventType, dwpState)) {
-            return getSubscriptionTemplateNameWithCorrection(notificationEventType, dwpState);
-        }
-
         if (EVENTS_WITH_SUBSCRIPTION_TYPE_DOCMOSIS_TEMPLATES.contains(notificationEventType)) {
             return getSubscriptionTemplateName(notificationEventType, subscriptionType);
         }
 
         return notificationEventType.getId();
-    }
-
-    private static boolean isCorrectionState(NotificationEventType notificationEventType, DwpState dwpState) {
-        return (ISSUE_FINAL_DECISION.equals(notificationEventType)
-                || ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType)
-                || CORRECTION_GRANTED.equals(notificationEventType))
-                && (DwpState.CORRECTION_GRANTED.equals(dwpState) || DwpState.CORRECTION_REFUSED.equals(dwpState));
     }
 
     private String getLetterTemplateName(SubscriptionType subscriptionType,
@@ -748,9 +735,5 @@ public class Personalisation<E extends NotificationWrapper> {
             notificationEventType.getId(),
             directionType,
             subscriptionType.name().toLowerCase());
-    }
-
-    private String getSubscriptionTemplateNameWithCorrection(NotificationEventType notificationEventType, DwpState dwpState) {
-        return String.format(TEMPLATE_NAME_TEMPLATE, notificationEventType.getId(), dwpState.getCcdDefinition());
     }
 }
