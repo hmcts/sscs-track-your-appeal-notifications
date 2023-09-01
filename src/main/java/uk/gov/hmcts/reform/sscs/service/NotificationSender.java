@@ -244,7 +244,6 @@ public class NotificationSender {
     }
 
     private Correspondence getLetterCorrespondence(NotificationEventType notificationEventType, String name, ReasonableAdjustmentStatus status) {
-        log.info("Creating letter correspondence for event type {} and name {}", notificationEventType, name);
         return Correspondence.builder().value(
                 CorrespondenceDetails.builder()
                         .eventType(notificationEventType.getId())

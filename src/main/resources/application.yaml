@@ -156,28 +156,8 @@ notification:
     correctionRequest:
       docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
     correctionGranted:
-      appellant:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
-      appointee:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
-      representative:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
-      joint_party:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
-      other_party:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
       docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
     correctionRefused:
-      appellant:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
-      appointee:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
-      representative:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
-      joint_party:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
-      other_party:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
       docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
     setAsideRequest:
       docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx

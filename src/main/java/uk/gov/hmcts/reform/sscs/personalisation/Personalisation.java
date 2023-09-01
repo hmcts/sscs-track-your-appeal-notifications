@@ -313,22 +313,6 @@ public class Personalisation<E extends NotificationWrapper> {
                 personalisation.put(FINAL_DECISION_DATE, formattedDate);
             }
         }
-
-        for (int i = 0; i < NAME.length(); i++) {
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-            log.info("Final decision date is");
-        }
-
       
         boolean isGranted = isGranted(ccdResponse.getDwpState());
       
@@ -644,8 +628,6 @@ public class Personalisation<E extends NotificationWrapper> {
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
 
         String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType(), notificationWrapper.getNewSscsCaseData());
-
-        log.info("Docmosis template name: {}", docmosisTemplateName);
 
         return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
                 benefit, notificationWrapper, notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom());
