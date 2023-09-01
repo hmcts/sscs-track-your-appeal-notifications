@@ -9,6 +9,7 @@
       <cve>CVE-2023-3635</cve>
       <cve>CVE-2023-2976</cve>
       <cve>CVE-2020-8908</cve>
+      <cve>CVE-2023-41080</cve>
     </suppress>
     <suppress until = "2023-11-01">
         <notes><![CDATA[
