@@ -1964,13 +1964,13 @@ public class PersonalisationTest {
         String date = LocalDate.now().toString();
         String date2 = LocalDate.now().minusDays(20).toString();
         SscsDocumentDetails document1 = SscsDocumentDetails.builder()
-                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
-                .documentDateAdded(date)
-                .build();
+            .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+            .documentDateAdded(date)
+            .build();
         SscsDocumentDetails document2 = SscsDocumentDetails.builder()
-                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
-                .documentDateAdded(date2)
-                .build();
+            .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+            .documentDateAdded(date2)
+            .build();
         SscsDocument sscsDocument1 = SscsDocument.builder().value(document1).build();
         SscsDocument sscsDocument2 = SscsDocument.builder().value(document2).build();
         List<SscsDocument> sscsDocuments = new ArrayList<>();
@@ -1978,25 +1978,27 @@ public class PersonalisationTest {
         sscsDocuments.add(sscsDocument1);
 
         SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID)
-                .sscsDocument(sscsDocuments)
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder()
-                                .name(name)
-                                .appointee(Appointee.builder()
-                                        .name(Name.builder()
-                                                .firstName("Appointee")
-                                                .lastName("Name")
-                                                .build())
-                                        .build())
-                                .build())
+            .ccdCaseId(CASE_ID)
+            .sscsDocument(sscsDocuments)
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder()
+                    .name(name)
+                    .appointee(Appointee.builder()
+                        .name(Name.builder()
+                            .firstName("Appointee")
+                            .lastName("Name")
+                            .build())
                         .build())
-                .build();
+                    .build())
+                .build())
+            .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                        .notificationEventType(REVIEW_AND_SET_ASIDE).build(),
-                new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPOINTEE,
-                        response.getAppeal().getAppellant(), response.getAppeal().getAppellant().getAppointee()));
+                .notificationEventType(REVIEW_AND_SET_ASIDE).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(),
+                        APPOINTEE,
+                        response.getAppeal().getAppellant(),
+                        response.getAppeal().getAppellant().getAppointee()));
 
         assertThat(result)
                 .containsEntry(DECISION_DATE_LITERAL, date);
@@ -2005,24 +2007,25 @@ public class PersonalisationTest {
     @Test
     public void givenReviewAndSetAside_setCorrectPtaDecisionDateAndNoReviewAndSetAsideDocument_shouldNotHaveDecisionDate() {
         SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID)
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder()
-                                .name(name)
-                                .appointee(Appointee.builder()
-                                        .name(Name.builder()
-                                                .firstName("Appointee")
-                                                .lastName("Name")
-                                                .build())
-                                        .build())
-                                .build())
+            .ccdCaseId(CASE_ID)
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder()
+                    .name(name)
+                    .appointee(Appointee.builder()
+                        .name(Name.builder()
+                            .firstName("Appointee")
+                            .lastName("Name")
+                            .build())
                         .build())
-                .build();
+                    .build())
+                .build())
+            .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                        .notificationEventType(REVIEW_AND_SET_ASIDE).build(),
-                new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPOINTEE,
-                        response.getAppeal().getAppellant(), response.getAppeal().getAppellant().getAppointee()));
+                .notificationEventType(REVIEW_AND_SET_ASIDE).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(),
+                        APPOINTEE, response.getAppeal().getAppellant(),
+                        response.getAppeal().getAppellant().getAppointee()));
 
         assertThat(result)
                 .doesNotContainKey(DECISION_DATE_LITERAL);
