@@ -50,15 +50,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.BUNDLE_CREATED_FOR_UPPER_TRIBUNAL;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PERMISSION_TO_APPEAL_REFUSED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.getOptionalField;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getNameForOtherParty;
@@ -331,13 +323,10 @@ public class Personalisation<E extends NotificationWrapper> {
 
         boolean isGranted = isGranted(ccdResponse.getDwpState());
       
-        if (PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType) || isGranted) {
-            personalisation.put(IS_GRANTED, isGranted);
-            personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
-            setDecisionDate(personalisation, ccdResponse);
-        }
-
-        if (BUNDLE_CREATED_FOR_UPPER_TRIBUNAL.equals(notificationEventType)) {
+        if (isGranted
+            || PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType)
+            || REVIEW_AND_SET_ASIDE.equals(notificationEventType)
+            || BUNDLE_CREATED_FOR_UPPER_TRIBUNAL.equals(notificationEventType)) {
             setDecisionDate(personalisation, ccdResponse);
         }
       
@@ -363,7 +352,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private static boolean hasFinalDecisionNoticeDocumentType(SscsDocument document) {
         return DocumentType.FINAL_DECISION_NOTICE.getValue().equals(document.getValue().getDocumentType());
     }
-
+  
     private static boolean isGranted(DwpState dwpState) {
         return DwpState.SET_ASIDE_GRANTED.equals(dwpState)
             || DwpState.LIBERTY_TO_APPLY_GRANTED.equals(dwpState)
