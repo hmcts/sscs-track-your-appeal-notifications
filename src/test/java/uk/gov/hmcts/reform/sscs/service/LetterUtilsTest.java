@@ -14,6 +14,8 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.model.PartyItemList.DWP;
+import static uk.gov.hmcts.reform.sscs.model.PartyItemList.HMCTS;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.addBlankPageAtTheEndIfOddPage;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.buildBundledLetter;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
@@ -486,6 +488,20 @@ public class LetterUtilsTest {
         DynamicList sender = new DynamicList(new DynamicListItem(senderType, senderType), new ArrayList<>());
         caseData.setOriginalSender(sender);
         assertEquals(senderName, LetterUtils.getNameForSender(caseData));
+    }
+
+    @Test
+    public void testGetNameForDwpSender() {
+        DynamicList sender = new DynamicList(new DynamicListItem(DWP.getCode(), DWP.getCode()), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        assertEquals(DWP.getLabel(), LetterUtils.getNameForSender(caseData));
+    }
+
+    @Test
+    public void testGetNameForHmctsSender() {
+        DynamicList sender = new DynamicList(new DynamicListItem(HMCTS.getCode(), HMCTS.getCode()), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        assertEquals(HMCTS.getLabel(), LetterUtils.getNameForSender(caseData));
     }
 
     @DisplayName("When sender is null then return empty string")
