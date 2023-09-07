@@ -316,7 +316,10 @@ public class Personalisation<E extends NotificationWrapper> {
       
         boolean isGranted = isGranted(ccdResponse.getDwpState());
       
-        if (PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType) || BUNDLE_CREATED_FOR_UPPER_TRIBUNAL.equals(notificationEventType) || isGranted) {
+        if (isGranted
+            || PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType)
+            || REVIEW_AND_SET_ASIDE.equals(notificationEventType)
+            || BUNDLE_CREATED_FOR_UPPER_TRIBUNAL.equals(notificationEventType)) {
             setDecisionDate(personalisation, ccdResponse);
         }
       
@@ -342,7 +345,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private static boolean hasFinalDecisionNoticeDocumentType(SscsDocument document) {
         return DocumentType.FINAL_DECISION_NOTICE.getValue().equals(document.getValue().getDocumentType());
     }
-
+  
     private static boolean isGranted(DwpState dwpState) {
         return DwpState.SET_ASIDE_GRANTED.equals(dwpState)
             || DwpState.LIBERTY_TO_APPLY_GRANTED.equals(dwpState)

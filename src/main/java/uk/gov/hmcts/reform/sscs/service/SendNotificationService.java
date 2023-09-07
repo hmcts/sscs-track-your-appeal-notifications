@@ -12,6 +12,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.LIBER
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.LIBERTY_TO_APPLY_REFUSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PERMISSION_TO_APPEAL_GRANTED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PERMISSION_TO_APPEAL_REFUSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_AND_SET_ASIDE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_GRANTED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REFUSED;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.addBlankPageAtTheEndIfOddPage;
@@ -379,6 +380,8 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.CORRECTION_GRANTED));
         } else if (CORRECTION_REFUSED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.CORRECTION_REFUSED));
+        } else if (REVIEW_AND_SET_ASIDE.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.REVIEW_AND_SET_ASIDE));
         } else if (PERMISSION_TO_APPEAL_GRANTED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.PERMISSION_TO_APPEAL_GRANTED));
         } else if (PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType)) {

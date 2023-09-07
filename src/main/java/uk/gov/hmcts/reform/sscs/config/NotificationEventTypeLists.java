@@ -71,6 +71,7 @@ public final class NotificationEventTypeLists {
     // move to EVENTS_TO_HANDLE when feature.postHearingsB.enabled removed
     public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_B = EnumSet.of(
         LIBERTY_TO_APPLY_REQUEST,
+        REVIEW_AND_SET_ASIDE,
         PERMISSION_TO_APPEAL_GRANTED,
         PERMISSION_TO_APPEAL_REFUSED,
         PERMISSION_TO_APPEAL_REQUEST,
@@ -99,6 +100,8 @@ public final class NotificationEventTypeLists {
         POST_HEARING_APP_SOR_WRITTEN,
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
+        REVIEW_AND_SET_ASIDE,
+        SOR_REFUSED,
         STRUCK_OUT,
         LIBERTY_TO_APPLY_REFUSED,
         SET_ASIDE_REFUSED,
@@ -154,6 +157,7 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
         REQUEST_FOR_INFORMATION,
+        REVIEW_AND_SET_ASIDE,
         REVIEW_CONFIDENTIALITY_REQUEST,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
@@ -242,6 +246,7 @@ public final class NotificationEventTypeLists {
         PROVIDE_APPOINTEE_DETAILS,
         REQUEST_FOR_INFORMATION,
         RESEND_APPEAL_CREATED,
+        REVIEW_AND_SET_ASIDE,
         REVIEW_CONFIDENTIALITY_REQUEST,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
@@ -295,11 +300,12 @@ public final class NotificationEventTypeLists {
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
+        REVIEW_AND_SET_ASIDE,
+        SET_ASIDE_REQUEST,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED,
-        SET_ASIDE_REQUEST,
         STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT
     );
