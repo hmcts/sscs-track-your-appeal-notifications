@@ -57,6 +57,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
@@ -700,6 +701,40 @@ public class PersonalisationTest {
 
         assertEquals(CASE_ID, result.get(APPEAL_REF));
         assertEquals(CASE_ID, result.get(CASE_REFERENCE_ID));
+    }
+
+    @Test
+    public void testCorrectionGrantedDwpState() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .dwpState(DwpState.CORRECTION_GRANTED)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertEquals(true, result.get(IS_GRANTED));
+    }
+
+    @Test
+    public void testCorrectionRefusedDwpState() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .dwpState(DwpState.CORRECTION_REFUSED)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertEquals(false, result.get(IS_GRANTED));
     }
 
     @Test
@@ -2071,6 +2106,51 @@ public class PersonalisationTest {
         assertFalse((boolean) result.get(IS_GRANTED));
     }
 
+    @Test
+    public void whenPostHearingsIsTrueAndFinalDecisionIsSet_setFinalDecision() {
+        ReflectionTestUtils.setField(personalisation, "isPostHearingsEnabled", true);
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .createdInGapsFrom("validAppeal")
+                .dwpState(DwpState.CORRECTION_GRANTED)
+                .finalDecisionCaseData(SscsFinalDecisionCaseData.builder().finalDecisionIssuedDate(LocalDate.now()).build())
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(CORRECTION_GRANTED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertTrue((boolean) result.get(IS_GRANTED));
+        assertEquals(result.get(FINAL_DECISION_DATE), LocalDate.now().format(DateTimeFormatter.ofPattern(FINAL_DECISION_DATE_FORMAT)));
+    }
+
+    @Test
+    public void whenPostHearingsIsTrueAndFinalDecisionIsNotSet_dontSetFinalDecision() {
+        ReflectionTestUtils.setField(personalisation, "isPostHearingsEnabled", true);
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .createdInGapsFrom("validAppeal")
+                .dwpState(DwpState.CORRECTION_GRANTED)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(CORRECTION_GRANTED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertTrue((boolean) result.get(IS_GRANTED));
+        assertNull(result.get(FINAL_DECISION_DATE));
+    }
+
     private Hearing createHearing(LocalDate hearingDate) {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
@@ -2106,17 +2186,6 @@ public class PersonalisationTest {
                     .postcode("TS3 3ST").build())
                 .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
                 .build()).build()).build();
-    }
-
-    private SscsCaseData createResponseWithHearings(List<Hearing> hearingList) {
-        return SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(name).build())
-                        .build())
-                .subscriptions(subscriptions)
-                .hearings(hearingList)
-                .build();
     }
 
     private SscsCaseData createResponseWithInfoRequests(InfoRequests infoRequests) {

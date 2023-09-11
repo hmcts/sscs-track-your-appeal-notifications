@@ -1,9 +1,9 @@
 package uk.gov.hmcts.reform.sscs.controller;
 
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.buildSscsCaseDataWrapper;
 
 import io.swagger.v3.oas.annotations.Operation;
-import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MimeTypeUtils;
@@ -15,10 +15,8 @@ import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
-import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
@@ -63,7 +61,6 @@ public class ReminderTestController {
                     callback.getCaseDetails().getCaseData(),
                     caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
                     getNotificationByCcdEvent(callback.getEvent()),
-                    callback.getCaseDetails().getCreatedDate(),
                     callback.getCaseDetails().getState());
 
             log.info("Test endpoint: Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
@@ -75,13 +72,5 @@ public class ReminderTestController {
             log.info("Exception thrown", e);
             throw e;
         }
-    }
-
-    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, LocalDateTime createdDate, State state) {
-        return SscsCaseDataWrapper.builder()
-                .newSscsCaseData(caseData)
-                .oldSscsCaseData(caseDataBefore)
-                .notificationEventType(event)
-                .state(state).build();
     }
 }
