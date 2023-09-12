@@ -15,6 +15,7 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENTS_TO_HANDLE = EnumSet.of(
         ADJOURNED,
         ADMIN_APPEAL_WITHDRAWN,
+        ADMIN_CORRECTION_HEADER,
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
@@ -75,12 +76,12 @@ public final class NotificationEventTypeLists {
         PERMISSION_TO_APPEAL_GRANTED,
         PERMISSION_TO_APPEAL_REFUSED,
         PERMISSION_TO_APPEAL_REQUEST,
-        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
-        LIBERTY_TO_APPLY_REQUEST
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_DORMANT_CASES = EnumSet.of(
         ADMIN_APPEAL_WITHDRAWN,
+        ADMIN_CORRECTION_HEADER,
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,
@@ -122,6 +123,7 @@ public final class NotificationEventTypeLists {
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADMIN_APPEAL_WITHDRAWN,
+        ADMIN_CORRECTION_HEADER,
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
@@ -172,6 +174,7 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_BUNDLED_LETTER = EnumSet.of(
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
+        ADMIN_CORRECTION_HEADER,
         CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         DECISION_ISSUED,
@@ -211,6 +214,7 @@ public final class NotificationEventTypeLists {
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADMIN_APPEAL_WITHDRAWN,
+        ADMIN_CORRECTION_HEADER,
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
@@ -276,6 +280,7 @@ public final class NotificationEventTypeLists {
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADJOURNED,
         ADMIN_APPEAL_WITHDRAWN,
+        ADMIN_CORRECTION_HEADER,
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,
@@ -311,6 +316,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_APPOINTEE = EnumSet.of(
+        ADMIN_CORRECTION_HEADER,
         APPEAL_RECEIVED,
         CORRECTION_GRANTED,
         CORRECTION_REFUSED,
@@ -341,6 +347,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_REP = EnumSet.of(
+        ADMIN_CORRECTION_HEADER,
         APPEAL_RECEIVED,
         CASE_UPDATED,
         CORRECTION_GRANTED,
@@ -371,6 +378,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_JOINT_PARTY = EnumSet.of(
+        ADMIN_CORRECTION_HEADER,
         JOINT_PARTY_ADDED,
         POST_HEARING_APP_SOR_WRITTEN,
         SET_ASIDE_GRANTED,
@@ -384,6 +392,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_OTHER_PARTY = EnumSet.of(
+        ADMIN_CORRECTION_HEADER,
         CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         DECISION_ISSUED,
@@ -442,6 +451,7 @@ public final class NotificationEventTypeLists {
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADMIN_APPEAL_WITHDRAWN,
+        ADMIN_CORRECTION_HEADER,
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
@@ -490,6 +500,7 @@ public final class NotificationEventTypeLists {
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADJOURNED,
         ADMIN_APPEAL_WITHDRAWN,
+        ADMIN_CORRECTION_HEADER,
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,

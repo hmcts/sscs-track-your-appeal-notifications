@@ -13,12 +13,12 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 @Getter
 @AllArgsConstructor
 public enum NotificationEventType {
-
     ACTION_HEARING_RECORDING_REQUEST(EventType.ACTION_HEARING_RECORDING_REQUEST, true, true, true, false, false, 0),
     ACTION_POSTPONEMENT_REQUEST(EventType.ACTION_POSTPONEMENT_REQUEST, true, true, true, true, false, 0),
     ACTION_POSTPONEMENT_REQUEST_WELSH(EventType.ACTION_POSTPONEMENT_REQUEST_WELSH, true, true, true, true, false, 0),
     ADJOURNED(EventType.ADJOURNED, true, false, false, false, false, 0),
     ADMIN_APPEAL_WITHDRAWN(EventType.ADMIN_APPEAL_WITHDRAWN, true, true, true, false, false, 0),
+    ADMIN_CORRECTION_HEADER(EventType.ADMIN_CORRECTION_HEADER, true, true, true, true, false, 0),
     APPEAL_DORMANT(EventType.DORMANT, true, true, false, false, false, 0),
     APPEAL_LAPSED(EventType.LAPSED_REVISED, true, true, false, false, false, 0),
     APPEAL_RECEIVED(EventType.APPEAL_RECEIVED, true, true, false, false, false, 300L),

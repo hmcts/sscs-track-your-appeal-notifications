@@ -350,7 +350,8 @@ public class Personalisation<E extends NotificationWrapper> {
         return DwpState.SET_ASIDE_GRANTED.equals(dwpState)
             || DwpState.LIBERTY_TO_APPLY_GRANTED.equals(dwpState)
             || DwpState.CORRECTION_GRANTED.equals(dwpState)
-            || DwpState.PERMISSION_TO_APPEAL_GRANTED.equals(dwpState);
+            || DwpState.PERMISSION_TO_APPEAL_GRANTED.equals(dwpState)
+            || DwpState.CORRECTED_DECISION_NOTICE_ISSUED.equals(dwpState);
     }
 
     private boolean hasBenefitType(SscsCaseData ccdResponse) {
