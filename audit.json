@@ -18,6 +18,6 @@
   "90033_Loosely Scoped Cookie_http://sscs-tya-notif-aat.service.core-compute-aat.internal/robots.txt_GET" : "ignore",
   "10096_Timestamp Disclosure - Unix_http://sscs-tya-notif-aat.service.core-compute-aat.internal_GET" : "ignore",
   "10096_Timestamp Disclosure - Unix_http://sscs-tya-notif-aat.service.core-compute-aat.internal/_GET" : "ignore",
-  "10049_Storable and Cacheable Content_http://****-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore",
-  "10112_Session Management Response Identified_http://****-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore"
+  "10049_Storable and Cacheable Content_http://sscs-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore",
+  "10112_Session Management Response Identified_http://sscs-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore"
 }
