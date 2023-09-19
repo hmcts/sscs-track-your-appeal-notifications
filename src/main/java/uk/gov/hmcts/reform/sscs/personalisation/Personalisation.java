@@ -633,7 +633,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType(), notificationWrapper.getNewSscsCaseData());
 
-        log.debug("Trying to get docmosis template from config with name {}", docmosisTemplateName);
+        log.info("Trying to get docmosis template from config with name {}", docmosisTemplateName);
 
         return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
                 benefit, notificationWrapper, notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom());
