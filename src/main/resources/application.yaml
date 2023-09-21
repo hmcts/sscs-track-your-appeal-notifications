@@ -153,6 +153,18 @@ job.scheduler:
 
 notification:
   english:
+    adminCorrectionHeader:
+      appellant:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      appointee:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      representative:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      joint_party:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      other_party:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
     correctionRequest:
       docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
     correctionGranted:
@@ -787,6 +799,18 @@ notification:
             # SSCS-11586 emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
             # SSCS-11586 smsId: bb3df0ea-8259-43c4-95de-9eef96206575
   welsh:
+    adminCorrectionHeader:
+      appellant:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+      appointee:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+      representative:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+      joint_party:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+      other_party:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+      docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
     correctionRequest:
       docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
     correctionGranted:
@@ -1459,6 +1483,7 @@ pdf-service:
   hmctsWelshImgVal: "[userImage:welshhmcts.png]"
   coverSheets:
     english:
+      adminCorrectionHeader: 'TB-SCS-GNO-ENG-00012.docx'
       appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
       directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
       processAudioVideo: 'TB-SCS-GNO-ENG-00012.docx'
@@ -1489,6 +1514,7 @@ pdf-service:
       libertyToApplyGranted: 'TB-SCS-GNO-ENG-00012.docx'
       libertyToApplyRefused: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
+      adminCorrectionHeader: 'TB-SCS-GNO-WEL-00479.docx'
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
       decisionIssued: 'TB-SCS-GNO-WEL-00479.docx'

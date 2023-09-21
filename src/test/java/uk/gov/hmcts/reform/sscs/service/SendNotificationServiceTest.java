@@ -702,6 +702,13 @@ public class SendNotificationServiceTest {
                                 .build())
                 .build());
 
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.CORRECTED_DECISION_NOTICE.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl9").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
         List<SscsWelshDocument> welshDocuments = new ArrayList<>();
 
         welshDocuments.add(SscsWelshDocument.builder().value(
