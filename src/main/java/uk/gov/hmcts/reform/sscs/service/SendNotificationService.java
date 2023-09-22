@@ -400,6 +400,8 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.LIBERTY_TO_APPLY_GRANTED));
         } else if (LIBERTY_TO_APPLY_REFUSED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.LIBERTY_TO_APPLY_REFUSED));
+        } else if (ADMIN_CORRECTION_HEADER.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(CORRECTED_DECISION_NOTICE));
         }
 
         return null;
