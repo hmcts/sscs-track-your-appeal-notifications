@@ -146,7 +146,8 @@ class ActionFurtherEvidencePersonalisationTest {
                 arguments(NotificationEventType.CORRECTION_REQUEST, PostHearingRequestType.CORRECTION, DocumentType.CORRECTION_APPLICATION),
                 arguments(NotificationEventType.LIBERTY_TO_APPLY_REQUEST, PostHearingRequestType.LIBERTY_TO_APPLY, DocumentType.LIBERTY_TO_APPLY_APPLICATION),
                 arguments(NotificationEventType.SET_ASIDE_REQUEST, PostHearingRequestType.SET_ASIDE, DocumentType.SET_ASIDE_APPLICATION),
-                arguments(NotificationEventType.STATEMENT_OF_REASONS_REQUEST, PostHearingRequestType.STATEMENT_OF_REASONS, DocumentType.STATEMENT_OF_REASONS_APPLICATION)
+                arguments(NotificationEventType.STATEMENT_OF_REASONS_REQUEST, PostHearingRequestType.STATEMENT_OF_REASONS, DocumentType.STATEMENT_OF_REASONS_APPLICATION),
+                arguments(NotificationEventType.PERMISSION_TO_APPEAL_REQUEST, PostHearingRequestType.PERMISSION_TO_APPEAL, DocumentType.PERMISSION_TO_APPEAL_APPLICATION)
         );
     }
 }

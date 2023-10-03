@@ -2,7 +2,8 @@ package uk.gov.hmcts.reform.sscs.servicebus;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.buildSscsCaseDataWrapper;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -14,8 +15,8 @@ import uk.gov.hmcts.reform.sscs.callback.CallbackDispatcher;
 import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DwpState;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
@@ -49,10 +50,19 @@ public class TopicConsumer {
             requireNonNull(callback, "callback must not be null");
             CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
 
+            NotificationEventType event = getNotificationByCcdEvent(callback.getEvent());
+            SscsCaseData caseData = callback.getCaseDetails().getCaseData();
+
+            if (ISSUE_FINAL_DECISION.equals(event)
+                    && DwpState.CORRECTION_GRANTED.equals(caseData.getDwpState())) {
+                return;
+            }
+
+
             SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
-                    callback.getCaseDetails().getCaseData(),
+                    caseData,
                     caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
-                    getNotificationByCcdEvent(callback.getEvent()),
+                    event,
                     callback.getCaseDetails().getState());
 
             log.info("Ccd Response received for case id: {}, {} with message id {}",
@@ -67,13 +77,5 @@ public class TopicConsumer {
             // unrecoverable. Catch to remove it from the queue.
             log.error(format(" Message id %s Caught unrecoverable error: %s", exception.getMessage(), messageId), exception);
         }
-    }
-
-    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, State state) {
-        return SscsCaseDataWrapper.builder()
-                .newSscsCaseData(caseData)
-                .oldSscsCaseData(caseDataBefore)
-                .notificationEventType(event)
-                .state(state).build();
     }
 }

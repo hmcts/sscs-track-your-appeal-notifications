@@ -20,9 +20,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExpectedLogMessage;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyNoErrorsLogged;
@@ -410,6 +408,16 @@ public class SendNotificationServiceTest {
     }
 
     @Test
+    @Parameters({"CORRECTION_REFUSED", "CORRECTION_GRANTED"})
+    public void validBundledLetterForCorrection(DwpState dwpState) {
+        SscsCaseData caseData = buildBaseWrapper(APPELLANT_WITH_ADDRESS, ISSUE_FINAL_DECISION, READY_TO_LIST.getId()).getNewSscsCaseData();
+        caseData.setDwpState(dwpState);
+        String bundledLetterDocumentUrl = getBundledLetterDocumentUrl(ISSUE_FINAL_DECISION, caseData);
+
+        assertNotNull(bundledLetterDocumentUrl);
+    }
+
+    @Test
     @Parameters(method = "bundledLetterTemplates")
     public void validBundledLetterType(NotificationEventType eventType) {
         assertNotNull(getBundledLetterDocumentUrl(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType, READY_TO_LIST.getId()).getNewSscsCaseData()));
@@ -610,10 +618,24 @@ public class SendNotificationServiceTest {
                 .build());
 
         documents.add(SscsDocument.builder().value(
-                SscsDocumentDetails.builder().documentType(DocumentType.ADJOURNMENT_NOTICE.getValue())
-                        .documentLink(DocumentLink.builder().documentUrl("testUrl4").build())
+                SscsDocumentDetails.builder().documentType(DocumentType.CORRECTION_GRANTED.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl7").build())
                         .documentDateAdded(LocalDate.now().minusDays(1).toString())
                         .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.CORRECTION_REFUSED.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl8").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.ADJOURNMENT_NOTICE.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl4").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
                 .build());
 
         documents.add(SscsDocument.builder().value(
@@ -631,6 +653,14 @@ public class SendNotificationServiceTest {
                 .build());
 
         documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl6").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
+      
+        documents.add(SscsDocument.builder().value(
                         SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS_GRANTED.getValue())
                                 .documentLink(DocumentLink.builder().documentUrl("testUrl7").build())
                                 .documentDateAdded(LocalDate.now().minusDays(1).toString())
@@ -640,6 +670,41 @@ public class SendNotificationServiceTest {
         documents.add(SscsDocument.builder().value(
                         SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS_REFUSED.getValue())
                                 .documentLink(DocumentLink.builder().documentUrl("testUrl8").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+      
+        documents.add(SscsDocument.builder().value(
+                      SscsDocumentDetails.builder().documentType(DocumentType.SET_ASIDE_GRANTED.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl9").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.SET_ASIDE_REFUSED.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl20").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.LIBERTY_TO_APPLY_GRANTED.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl7").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.LIBERTY_TO_APPLY_REFUSED.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl8").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.CORRECTED_DECISION_NOTICE.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl9").build())
                                 .documentDateAdded(LocalDate.now().minusDays(1).toString())
                                 .build())
                 .build());
@@ -693,6 +758,20 @@ public class SendNotificationServiceTest {
                         .documentLink(DocumentLink.builder().documentUrl("testUrl6").build())
                         .documentDateAdded(LocalDate.now().minusDays(1).toString())
                         .build())
+                .build());
+
+        welshDocuments.add(SscsWelshDocument.builder().value(
+                        SscsWelshDocumentDetails.builder().documentType(DocumentType.CORRECTION_GRANTED.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl7").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
+        welshDocuments.add(SscsWelshDocument.builder().value(
+                        SscsWelshDocumentDetails.builder().documentType(DocumentType.CORRECTION_REFUSED.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl8").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
                 .build());
 
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()

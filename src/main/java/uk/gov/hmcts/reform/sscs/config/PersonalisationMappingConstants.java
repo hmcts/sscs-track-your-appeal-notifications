@@ -36,6 +36,7 @@ public final class PersonalisationMappingConstants {
     public static final String CREATED_DATE_WELSH = "created_date_welsh";
     public static final String CURRENT_DATE_WELSH = "welsh_current_date";
     public static final String DAYS_TO_HEARING_LITERAL = "days_to_hearing_text";
+    public static final String DECISION_DATE_LITERAL = "decision_date";
     public static final String DECISION_POSTED_RECEIVE_DATE = "decision_posted_receive_date";
     public static final String DECISION_POSTED_RECEIVE_DATE_WELSH = "welsh_decision_posted_receive_date";
     public static final String ENTITY_TYPE = "entityType";
@@ -46,12 +47,14 @@ public final class PersonalisationMappingConstants {
     public static final String EXCELA_ADDRESS_LINE3 = "excela_address_line3";
     public static final String EXCELA_ADDRESS_POSTCODE = "excela_address_postcode";
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
+    public static final String FINAL_DECISION_DATE = "final_decision_date";
     public static final String FIRST_TIER_AGENCY_ACRONYM_WELSH = "welsh_first_tier_agency_acronym";
     public static final String FIRST_TIER_AGENCY_FULL_NAME = "first_tier_agency_full_name";
     public static final String FIRST_TIER_AGENCY_FULL_NAME_WELSH = "welsh_first_tier_agency_full_name";
     public static final String FIRST_TIER_AGENCY_GROUP = "first_tier_agency_group";
     public static final String FIRST_TIER_AGENCY_GROUP_TITLE = "first_tier_agency_group_title";
     public static final String FIRST_TIER_AGENCY_GROUP_WELSH = "welsh_first_tier_agency_group";
+    public static final String FIRST_TIER_AGENCY_OFFICE = "fta_office";
     public static final String HEARING = "hearing";
     public static final String HEARING_ARRANGEMENT_DETAILS_LITERAL = "hearing_arrangement_details";
     public static final String HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH = "welsh_hearing_arrangement_details";
@@ -65,6 +68,7 @@ public final class PersonalisationMappingConstants {
     public static final String HEARING_TYPE = "hearing_type";
     public static final String HELPLINE_PHONE_NUMBER = "helpline_phone_number";
     public static final String INFO_REQUEST_DETAIL = "info_request_detail";
+    public static final String IS_GRANTED = "isGranted";
     public static final String IS_OTHER_PARTY = "is_other_party";
     public static final String JOINT = "joint";
     public static final String JOINT_PARTY = "joint_party";

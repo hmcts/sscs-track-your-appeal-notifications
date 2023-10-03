@@ -4,10 +4,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
@@ -53,12 +50,15 @@ import java.util.Optional;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
@@ -77,6 +77,7 @@ import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
+@Slf4j
 @RunWith(JUnitParamsRunner.class)
 public class PersonalisationTest {
 
@@ -700,6 +701,40 @@ public class PersonalisationTest {
 
         assertEquals(CASE_ID, result.get(APPEAL_REF));
         assertEquals(CASE_ID, result.get(CASE_REFERENCE_ID));
+    }
+
+    @Test
+    public void testCorrectionGrantedDwpState() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .dwpState(DwpState.CORRECTION_GRANTED)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertEquals(true, result.get(IS_GRANTED));
+    }
+
+    @Test
+    public void testCorrectionRefusedDwpState() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .dwpState(DwpState.CORRECTION_REFUSED)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertEquals(false, result.get(IS_GRANTED));
     }
 
     @Test
@@ -1768,9 +1803,85 @@ public class PersonalisationTest {
             .containsEntry(ENTITY_TYPE,"Appointee");
     }
 
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldProvideCorrectValuesForPtaGrantedValues() {
+        String date1 = LocalDate.now().toString();
+        String date2 = LocalDate.now().minusDays(10).toString();
+        SscsDocumentDetails document1 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                .documentDateAdded(date1)
+                .build();
+        SscsDocument sscsDocument1 = SscsDocument.builder().value(document1).build();
+
+        SscsDocumentDetails document2 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                .documentDateAdded(date2)
+                .build();
+        SscsDocument sscsDocument2 = SscsDocument.builder().value(document2).build();
+
+        DynamicListItem item = new DynamicListItem("appellant", "");
+        DynamicList originalSender = new DynamicList(item, List.of());
+
+        Appellant appellant = Appellant.builder().name(name).build();
+        Appeal appeal = Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).appellant(appellant)
+                .build();
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .sscsDocument(List.of(sscsDocument1, sscsDocument2))
+                .originalSender(originalSender)
+                .appeal(appeal)
+                .dwpState(DwpState.PERMISSION_TO_APPEAL_GRANTED)
+                .build();
+
+        SubscriptionWithType subscription = new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT,
+                appellant, appellant);
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(response)
+                .notificationEventType(PERMISSION_TO_APPEAL_GRANTED).build();
+        var result = personalisation.create(caseDataWrapper, subscription);
+
+        assertThat(result)
+                .containsEntry(IS_GRANTED, true)
+                .containsEntry(SENDER_NAME, name.getFullNameNoTitle())
+                .containsEntry(DECISION_DATE_LITERAL, date1);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldProvideCorrectValuesForPtaRefusedValues() {
+        String date = LocalDate.now().toString();
+        SscsDocumentDetails document1 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                .documentDateAdded(date)
+                .build();
+        SscsDocument sscsDocument = SscsDocument.builder().value(document1).build();
+
+        DynamicListItem item = new DynamicListItem("appellant", "");
+        DynamicList originalSender = new DynamicList(item, List.of());
+
+        Appellant appellant = Appellant.builder().name(name).build();
+        Appeal appeal = Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).appellant(appellant).build();
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).appeal(appeal)
+                .sscsDocument(List.of(sscsDocument))
+                .originalSender(originalSender)
+                .build();
+        SubscriptionWithType subscription = new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT,
+                appellant, appellant);
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(PERMISSION_TO_APPEAL_REFUSED).build();
+        var result = personalisation.create(caseDataWrapper, subscription);
+
+        assertThat(result)
+                .containsEntry(IS_GRANTED, false)
+                .containsEntry(SENDER_NAME, name.getFullNameNoTitle())
+                .containsEntry(DECISION_DATE_LITERAL, date);
+    }
+
     @Test
     public void givenASyaAppealWithHearingArrangements_setHearingArrangementsForTemplate() {
-
         List<String> arrangementList = new ArrayList<>();
 
         arrangementList.add("signLanguageInterpreter");
@@ -1832,7 +1943,232 @@ public class PersonalisationTest {
                         + "\nMynediad i bobl anab: Gofynnol\n"
                         + "\nUnrhyw drefniadau eraill: Other",
                 result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH));
+    }
 
+    @Test
+    public void testSetAsideGrantedDwpState() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .dwpState(DwpState.SET_ASIDE_GRANTED)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertEquals(true, result.get(IS_GRANTED));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldProvideCorrectValuesForBundleCreatedForUT() {
+        String date = LocalDate.now().toString();
+        SscsDocumentDetails document1 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                .documentDateAdded(date)
+                .build();
+        SscsDocument sscsDocument = SscsDocument.builder().value(document1).build();
+
+        DynamicListItem item = new DynamicListItem("appellant", "");
+        DynamicList originalSender = new DynamicList(item, List.of());
+
+        Appellant appellant = Appellant.builder().name(name).build();
+        Appeal appeal = Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).appellant(appellant).build();
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).appeal(appeal)
+                .sscsDocument(List.of(sscsDocument))
+                .originalSender(originalSender)
+                .build();
+        SubscriptionWithType subscription = new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT,
+                appellant, appellant);
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(BUNDLE_CREATED_FOR_UPPER_TRIBUNAL).build();
+        var result = personalisation.create(caseDataWrapper, subscription);
+
+        assertThat(result)
+                .containsEntry(APPELLANT_NAME, name.getFullNameNoTitle())
+                .containsEntry(ENTITY_TYPE, "Appellant")
+                .containsEntry(DECISION_DATE_LITERAL, date);
+    }
+  
+    @Test
+    public void givenReviewAndSetAside_setCorrectPtaDecisionDate() {
+        String date = LocalDate.now().toString();
+        String date2 = LocalDate.now().minusDays(20).toString();
+        SscsDocumentDetails document1 = SscsDocumentDetails.builder()
+            .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+            .documentDateAdded(date)
+            .build();
+        SscsDocumentDetails document2 = SscsDocumentDetails.builder()
+            .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+            .documentDateAdded(date2)
+            .build();
+        SscsDocument sscsDocument1 = SscsDocument.builder().value(document1).build();
+        SscsDocument sscsDocument2 = SscsDocument.builder().value(document2).build();
+        List<SscsDocument> sscsDocuments = new ArrayList<>();
+        sscsDocuments.add(sscsDocument2);
+        sscsDocuments.add(sscsDocument1);
+
+        SscsCaseData response = SscsCaseData.builder()
+            .ccdCaseId(CASE_ID)
+            .sscsDocument(sscsDocuments)
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder()
+                    .name(name)
+                    .appointee(Appointee.builder()
+                        .name(Name.builder()
+                            .firstName("Appointee")
+                            .lastName("Name")
+                            .build())
+                        .build())
+                    .build())
+                .build())
+            .build();
+
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(REVIEW_AND_SET_ASIDE).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(),
+                        APPOINTEE,
+                        response.getAppeal().getAppellant(),
+                        response.getAppeal().getAppellant().getAppointee()));
+
+        assertThat(result)
+                .containsEntry(DECISION_DATE_LITERAL, date);
+    }
+
+    @Test
+    public void givenReviewAndSetAside_setCorrectPtaDecisionDateAndNoReviewAndSetAsideDocument_shouldNotHaveDecisionDate() {
+        SscsCaseData response = SscsCaseData.builder()
+            .ccdCaseId(CASE_ID)
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder()
+                    .name(name)
+                    .appointee(Appointee.builder()
+                        .name(Name.builder()
+                            .firstName("Appointee")
+                            .lastName("Name")
+                            .build())
+                        .build())
+                    .build())
+                .build())
+            .build();
+
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(REVIEW_AND_SET_ASIDE).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(),
+                        APPOINTEE, response.getAppeal().getAppellant(),
+                        response.getAppeal().getAppellant().getAppointee()));
+
+        assertThat(result)
+                .doesNotContainKey(DECISION_DATE_LITERAL);
+    }
+
+    @Test
+    public void whenDwpStateIsLtaGranted_setIsGrantedToTrue() {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .createdInGapsFrom("validAppeal")
+                .dwpState(DwpState.LIBERTY_TO_APPLY_GRANTED)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(LIBERTY_TO_APPLY_GRANTED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertTrue((boolean) result.get(IS_GRANTED));
+    }
+
+    @Test
+    public void whenDwpStateIsLtaRefused_setIsGrantedToFalse() {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .createdInGapsFrom("validAppeal")
+                .dwpState(DwpState.LIBERTY_TO_APPLY_REFUSED)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(LIBERTY_TO_APPLY_REFUSED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertFalse((boolean) result.get(IS_GRANTED));
+    }
+
+    @Test
+    public void whenDwpStateIsCorrectionIssued_setIsGrantedToTrue() {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .createdInGapsFrom("validAppeal")
+                .dwpState(DwpState.CORRECTED_DECISION_NOTICE_ISSUED)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(LIBERTY_TO_APPLY_GRANTED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertTrue((boolean) result.get(IS_GRANTED));
+    }
+
+    @Test
+    public void whenPostHearingsIsTrueAndFinalDecisionIsSet_setFinalDecision() {
+        ReflectionTestUtils.setField(personalisation, "isPostHearingsEnabled", true);
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .createdInGapsFrom("validAppeal")
+                .dwpState(DwpState.CORRECTION_GRANTED)
+                .finalDecisionCaseData(SscsFinalDecisionCaseData.builder().finalDecisionIssuedDate(LocalDate.now()).build())
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(CORRECTION_GRANTED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertTrue((boolean) result.get(IS_GRANTED));
+        assertEquals(result.get(FINAL_DECISION_DATE), LocalDate.now().format(DateTimeFormatter.ofPattern(FINAL_DECISION_DATE_FORMAT)));
+    }
+
+    @Test
+    public void whenPostHearingsIsTrueAndFinalDecisionIsNotSet_dontSetFinalDecision() {
+        ReflectionTestUtils.setField(personalisation, "isPostHearingsEnabled", true);
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .createdInGapsFrom("validAppeal")
+                .dwpState(DwpState.CORRECTION_GRANTED)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(CORRECTION_GRANTED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertTrue((boolean) result.get(IS_GRANTED));
+        assertNull(result.get(FINAL_DECISION_DATE));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {
@@ -1870,17 +2206,6 @@ public class PersonalisationTest {
                     .postcode("TS3 3ST").build())
                 .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
                 .build()).build()).build();
-    }
-
-    private SscsCaseData createResponseWithHearings(List<Hearing> hearingList) {
-        return SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(name).build())
-                        .build())
-                .subscriptions(subscriptions)
-                .hearings(hearingList)
-                .build();
     }
 
     private SscsCaseData createResponseWithInfoRequests(InfoRequests infoRequests) {
