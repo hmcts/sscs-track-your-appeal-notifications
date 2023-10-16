@@ -159,7 +159,7 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"sendToJudge"})
+    @Parameters({"sendToJudge", "refuseOnTheDay"})
     public void willNotHandleActionPostponementRequestEvents(String actionSelected) {
         callback.setNotificationEventType(ACTION_POSTPONEMENT_REQUEST);
         oldCaseData.getPostponementRequest().setActionPostponementRequestSelected(actionSelected);
