@@ -51,5 +51,6 @@
     </suppress>
     <suppress>
         <cve>CVE-2023-4586</cve>
+        <cve>CVE-2023-42794</cve>
     </suppress>
 </suppressions>
