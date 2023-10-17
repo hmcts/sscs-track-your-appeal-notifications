@@ -400,7 +400,7 @@ public class NotificationService {
             return false;
         }
 
-        log.info("Notification valid to send for case id {} and event {} in state {}",
+        log.info("Notification valid to send for case id {} and event {} in state {} ...",
             notificationWrapper.getCaseId(),
             notificationType.getId(),
             notificationWrapper.getSscsCaseDataWrapper().getState());
