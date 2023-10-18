@@ -395,17 +395,12 @@ public class NotificationService {
         if (ACTION_POSTPONEMENT_REQUEST.equals(notificationType)
                 && ProcessRequestAction.REFUSE_ON_THE_DAY.getValue().equals(actionPostponementRequestSelected)
         ) {
-            log.info("Notification not triggered because Action postponement request with refuse on the day selected for case id {} with newsscs {} and oldsscs {} "
-                            + "and old data wrapper {} and new data wrapper {}",
-                    notificationWrapper.getCaseId(),
-                    actionPostponementRequestSelected,
-                    notificationWrapper.getOldSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected(),
-                    notificationWrapper.getSscsCaseDataWrapper().getOldSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected(),
-                    notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected());
+            log.info("Notification not triggered because Action postponement request with refuse on the day selected for case id {}",
+                    notificationWrapper.getCaseId());
             return false;
         }
 
-        log.info("Notification valid to send for case id {} and event {} in state {} ...",
+        log.info("Notification valid to send for case id {} and event {} in state {}",
             notificationWrapper.getCaseId(),
             notificationType.getId(),
             notificationWrapper.getSscsCaseDataWrapper().getState());
