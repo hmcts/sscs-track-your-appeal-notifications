@@ -190,8 +190,7 @@ dependencyManagement {
             entry 'spring-webmvc'
         }
 
-        //CVE-2022-29885, CVE-2022-42252, CVE-2022-45143, CVE-2022-23181, CVE-2022-34305, CVE-2023-28708, CVE-2021-43980
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.75') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.81') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-websocket'
         }
