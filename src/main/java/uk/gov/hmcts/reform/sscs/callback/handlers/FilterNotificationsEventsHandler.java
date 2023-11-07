@@ -47,7 +47,7 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             || (isPostHearingsEnabled && EVENTS_TO_HANDLE_POSTHEARINGS_A.contains(callback.getNotificationEventType()))
             || (isPostHearingsBEnabled && EVENTS_TO_HANDLE_POSTHEARINGS_B.contains(callback.getNotificationEventType()))
             || shouldActionPostponementBeNotified(callback)
-            || hasNewAppointeeAddedForAppellantDecesedCase(callback)
+            || hasNewAppointeeAddedForAppellantDeceasedCase(callback)
             || shouldHandleForHearingRoute(callback);
     }
 
@@ -77,7 +77,7 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
                 callback.getOldSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected());
     }
 
-    private boolean hasNewAppointeeAddedForAppellantDecesedCase(SscsCaseDataWrapper callback) {
+    private boolean hasNewAppointeeAddedForAppellantDeceasedCase(SscsCaseDataWrapper callback) {
         if (!(DEATH_OF_APPELLANT.equals(callback.getNotificationEventType())
                 || PROVIDE_APPOINTEE_DETAILS.equals(callback.getNotificationEventType()))) {
             return false;

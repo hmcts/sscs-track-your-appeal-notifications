@@ -202,14 +202,6 @@ public class NotificationSender {
         return sendLetterResponse;
     }
 
-    public void saveLetter(byte[] pdfForLetter, String name, SscsCaseData caseData, NotificationEventType notificationEventType) {
-        if (pdfForLetter != null) {
-            final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
-            saveCorrespondenceAsyncService.saveLetter(correspondence, pdfForLetter, caseData.getCcdCaseId());
-            log.info("Letter Notification saved for case id : {}", caseData.getCcdCaseId());
-        }
-    }
-
     public void saveLettersToReasonableAdjustment(byte[] pdfForLetter, NotificationEventType notificationEventType, String name, String ccdCaseId, SubscriptionType subscriptionType) {
         if (pdfForLetter != null) {
             final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name, ReasonableAdjustmentStatus.REQUIRED);

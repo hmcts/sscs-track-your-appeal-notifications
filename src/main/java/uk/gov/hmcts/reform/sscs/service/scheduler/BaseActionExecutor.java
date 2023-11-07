@@ -1,23 +1,21 @@
 package uk.gov.hmcts.reform.sscs.service.scheduler;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByEvent;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.buildSscsCaseDataWrapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
-import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -65,7 +63,6 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
                         callback.getCaseDetails().getCaseData(),
                         null,
                         getNotificationByEvent(eventId),
-                        caseDetails.getCreatedDate(),
                         callback.getCaseDetails().getState());
 
                 NotificationWrapper notificationWrapper = getWrapper(wrapper, payload);
@@ -101,14 +98,6 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
         node = node.put("event_id", jobName);
 
         return mapper.writeValueAsString(node);
-    }
-
-    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, LocalDateTime createdDate, State state) {
-        return SscsCaseDataWrapper.builder()
-                .newSscsCaseData(caseData)
-                .oldSscsCaseData(caseDataBefore)
-                .state(state)
-                .notificationEventType(event).build();
     }
 
     protected abstract void updateCase(Long caseId, SscsCaseDataWrapper wrapper, IdamTokens idamTokens);

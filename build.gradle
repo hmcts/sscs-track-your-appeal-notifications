@@ -5,7 +5,7 @@ plugins {
     id 'org.sonarqube' version '4.0.0.2929'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.springframework.boot' version '2.5.6'
+    id 'org.springframework.boot' version '2.5.15'
     id 'uk.gov.hmcts.java' version '0.12.43'
     id 'org.owasp.dependencycheck' version '8.2.1'
     id 'com.github.ben-manes.versions' version '0.47.0'
@@ -144,7 +144,7 @@ dependencyManagement {
     }
     dependencies {
         //CVE-2022-41881, CVE-2021-43797, CVE-2023-34462, CVE-2022-24823 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.94.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.96.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -190,8 +190,7 @@ dependencyManagement {
             entry 'spring-webmvc'
         }
 
-        //CVE-2022-29885, CVE-2022-42252, CVE-2022-45143, CVE-2022-23181, CVE-2022-34305, CVE-2023-28708, CVE-2021-43980
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.75') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.81') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-websocket'
         }
@@ -350,6 +349,8 @@ dependencies {
     implementation group: 'org.apache.qpid', name: 'qpid-jms-client', version: '1.8.0'
     implementation group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
 
+    implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '7.0.1'
+
     implementation group: 'com.github.hmcts', name: 'properties-volume-spring-boot-starter', version: '0.1.1'
     implementation group: 'com.github.hmcts', name: 'java-logging', version: '6.0.1'
     implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.1.2'
@@ -357,7 +358,7 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.26.4'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '5.1.0'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.10'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
