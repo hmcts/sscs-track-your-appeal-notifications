@@ -358,7 +358,7 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '5.0.10'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '5.1.0'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.10'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
@@ -388,8 +388,8 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
 
-    implementation group: 'net.minidev', name: 'accessors-smart', version: '2.4.9'
-    implementation group: 'net.minidev', name: 'json-smart', version: '2.4.10'
+    implementation group: 'net.minidev', name: 'accessors-smart', version: '2.5.0'
+    implementation group: 'net.minidev', name: 'json-smart', version: '2.5.0'
 
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
     testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
