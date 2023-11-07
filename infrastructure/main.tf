@@ -45,6 +45,7 @@ module "notification-scheduler-db-flexible" {
   env    = var.env
   product       = var.product
   component     = var.component
+  name          = "${var.product}-${var.component}-postgres-v15-db"
   business_area = "CFT" # sds or cft
   # The original subnet is full, this is required to use the new subnet for new databases
   subnet_suffix = "expanded"
@@ -62,7 +63,7 @@ module "notification-scheduler-db-flexible" {
   pgsql_server_configuration = [
     {
       name  = "azure.extensions"
-      value = ""//need to get value for this by running "SELECT * FROM pg_extension;"
+      value = "plpgsql,pg_stat_statements,pg_buffercache,hypopg"
     }
   ]
   //Below attributes needs to be overridden for Perftest & Prod
