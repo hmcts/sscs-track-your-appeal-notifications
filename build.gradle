@@ -323,12 +323,12 @@ configurations.all {
 }
 
 dependencies {
-    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.15.0'
 
     implementation group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.16.3'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
-    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.9'
     implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.9'
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
@@ -383,19 +383,19 @@ dependencies {
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-devtools'
 
-    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
 
-    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.15.0'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
 
     implementation group: 'net.minidev', name: 'accessors-smart', version: '2.5.0'
     implementation group: 'net.minidev', name: 'json-smart', version: '2.5.0'
 
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
-    testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
-    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
-    integrationTestImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
-    integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+    testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+    integrationTestImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+    integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
 
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.6.2') {
         exclude group: "com.vaadin.external.google", module:"android-json"
@@ -409,7 +409,7 @@ dependencies {
         exclude group: 'commons-io', module: 'commons-io'
     }
 
-    integrationTestImplementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    integrationTestImplementation group: 'commons-io', name: 'commons-io', version: '2.15.0'
 
     runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator'
 }
