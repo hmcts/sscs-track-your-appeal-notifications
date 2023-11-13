@@ -214,10 +214,10 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         if (YesNo.isYes(caseData.getSendDirectionNoticeToJointParty()) && caseData.isThereAJointParty()) {
             eligiblePartyMembers.add(ConfidentialityPartyMembers.JOINT_PARTY.getCode());
         }
-        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherParty()) && isOtherPartyPresent(caseData)) {
+        boolean hasOtherPartyAppointee = Optional.ofNullable(caseData.getOtherParties()).orElse(Collections.emptyList()).stream().map(CcdValue::getValue).anyMatch(OtherParty::hasAppointee);
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherParty()) && isOtherPartyPresent(caseData) && !hasOtherPartyAppointee) {
             eligiblePartyMembers.add(ConfidentialityPartyMembers.OTHER_PARTY.getCode());
         }
-        boolean hasOtherPartyAppointee = Optional.ofNullable(caseData.getOtherParties()).orElse(Collections.emptyList()).stream().map(CcdValue::getValue).anyMatch(OtherParty::hasAppointee);
         if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherPartyAppointee()) && hasOtherPartyAppointee) {
             eligiblePartyMembers.add(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode());
         }
