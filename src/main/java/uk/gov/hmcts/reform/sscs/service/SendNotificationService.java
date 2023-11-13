@@ -351,6 +351,7 @@ public class SendNotificationService {
         return associatedCasePdf;
     }
 
+
     protected static String getBundledLetterDocumentUrl(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
         if (DIRECTION_ISSUED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DIRECTION_NOTICE));
