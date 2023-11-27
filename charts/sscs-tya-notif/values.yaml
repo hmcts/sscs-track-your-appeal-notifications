@@ -18,7 +18,6 @@ java:
       - s2s-micro
       - evidence-share-topic-shared-access-key
       - docmosis-api-key
-      - tya-notif-POSTGRES-PASS-FLEX-V15
       - notification-key
       - notification-test-key
       - name: app-insights-connection-string
