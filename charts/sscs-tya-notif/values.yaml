@@ -20,6 +20,8 @@ java:
       - docmosis-api-key
       - notification-key
       - notification-test-key
+      - name: tya-notif-POSTGRES-PASS-FLEX-V15
+        alias: JOB_SCHEDULER_DB_PASSWORD
       - name: app-insights-connection-string
         alias: app-insights-connection-string
   environment:
