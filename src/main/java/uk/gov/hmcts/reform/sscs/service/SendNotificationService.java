@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -178,7 +179,7 @@ public class SendNotificationService {
                 );
         log.info("In sendSmsNotification method notificationSender is available {} ", notificationSender != null);
 
-        notificationLog(notification, "sms", notification.getMobile(), wrapper);
+        notificationLog(notification, "sms", StringUtils.right(notification.getMobile(),4), wrapper);
 
         return notificationHandler.sendNotification(wrapper, smsTemplateId, "SMS", sendNotification);
     }
@@ -197,8 +198,9 @@ public class SendNotificationService {
                     );
 
             log.info("In sendEmailNotification method notificationSender is available {} ", notificationSender != null);
-
-            notificationLog(notification, "email", notification.getEmail(), wrapper);
+            notificationLog(notification, "email",
+                    StringUtils.left(notification.getEmail(),3) + "..." + notification.getEmail().substring(notification.getEmail().indexOf("@"), notification.getEmail().indexOf("@")+3) + "...",
+                    wrapper);
 
             return notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
         }

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -134,8 +135,16 @@ public class NotificationService {
                 Optional.ofNullable(sub.getEntity()).map(Object::getClass).orElse(null),
                 sub.getPartyId(),
                 sub.getSubscriptionType(),
-                sub.getSubscription()))
+                sub.getSubscription().getWantSmsNotifications(),
+                sub.getSubscription().getTya(),
+                StringUtils.left(sub.getSubscription().getEmail(),3) + "..." + sub.getSubscription().getEmail().substring(sub.getSubscription().getEmail().indexOf("@"),sub.getSubscription().getEmail().indexOf("@")+3) + "...",
+                StringUtils.right(sub.getSubscription().getMobile(),4),
+                sub.getSubscription().getSubscribeEmail(),
+                sub.getSubscription().getSubscribeSms(),
+                sub.getSubscription().getReason(),
+                sub.getSubscription().getLastLoggedIntoMya()))
             .collect(Collectors.joining("\n", "\n", ""));
+
         log.info("Processing for the Notification Type {} and Case Id {} the following subscriptions: {}",
             notificationWrapper.getNotificationType(),
             notificationWrapper.getCaseId(),
