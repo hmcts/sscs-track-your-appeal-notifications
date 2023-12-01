@@ -130,7 +130,7 @@ public class NotificationService {
         overrideNotificationType(notificationWrapper);
         String subscriptionTypes = notificationWrapper.getSubscriptionsBasedOnNotificationType().stream()
             .map(sub -> {
-                if(sub.getSubscription()!=null){
+                if (sub.getSubscription() != null) {
                         return String.format("Subscription Type %s, SubscribeEmail %s Email %s SubscribeSMS %s Mobile %s",
                             sub.getSubscriptionType(),
                             sub.getSubscription().getSubscribeEmail(),
@@ -138,8 +138,8 @@ public class NotificationService {
                             sub.getSubscription().getSubscribeSms(),
                             StringUtils.getReducedMobileforLogs(sub.getSubscription().getMobile()));
                     }
-                        return String.format("Subscription Type %s", sub.getSubscriptionType());
-                    }
+                return String.format("Subscription Type %s", sub.getSubscriptionType());
+            }
             )
             .collect(Collectors.joining("\n", "\n", ""));
 

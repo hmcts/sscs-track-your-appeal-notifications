@@ -48,8 +48,8 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
-import uk.gov.service.notify.NotificationClientException;
 import uk.gov.hmcts.reform.sscs.utility.StringUtils;
+import uk.gov.service.notify.NotificationClientException;
 
 @Service
 @Slf4j
