@@ -146,8 +146,7 @@ public class NotificationService {
         log.info("Processing for the Notification Type {} and Case Id {} the following subscriptions: {}",
             notificationWrapper.getNotificationType(),
             notificationWrapper.getCaseId(),
-            subscriptionTypes
-                );
+            subscriptionTypes);
 
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)

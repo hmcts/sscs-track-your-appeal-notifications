@@ -179,7 +179,7 @@ public class SendNotificationService {
                 );
         log.info("In sendSmsNotification method notificationSender is available {} ", notificationSender != null);
 
-        notificationLog(notification, "sms", StringUtils.getReducedPhoneNumberforLogs(notification.getMobile()), wrapper);
+        notificationLog(notification, "sms", StringUtils.getReducedMobileforLogs(notification.getMobile()), wrapper);
 
         return notificationHandler.sendNotification(wrapper, smsTemplateId, "SMS", sendNotification);
     }
