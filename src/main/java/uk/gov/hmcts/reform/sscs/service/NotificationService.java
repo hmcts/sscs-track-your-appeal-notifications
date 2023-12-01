@@ -22,7 +22,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandat
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,7 +136,7 @@ public class NotificationService {
                             sub.getSubscription().getSubscribeEmail(),
                             StringUtils.getReducedEmailforLogs(sub.getSubscription().getEmail()),
                             sub.getSubscription().getSubscribeSms(),
-                            StringUtils.getReducedPhoneNumberforLogs(sub.getSubscription().getMobile()));
+                            StringUtils.getReducedMobileforLogs(sub.getSubscription().getMobile()));
                     }
                         return String.format("Subscription Type %s", sub.getSubscriptionType());
                     }
