@@ -18,7 +18,6 @@ java:
       - s2s-micro
       - evidence-share-topic-shared-access-key
       - docmosis-api-key
-      - notification-job-scheduler-db-password
       - notification-key
       - notification-test-key
       - name: tya-notif-POSTGRES-PASS-FLEX-V15
