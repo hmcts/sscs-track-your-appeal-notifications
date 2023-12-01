@@ -50,6 +50,7 @@ import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.NotificationClientException;
+import uk.gov.hmcts.reform.sscs.utility.StringUtils;
 
 @Service
 @Slf4j
@@ -179,7 +180,7 @@ public class SendNotificationService {
                 );
         log.info("In sendSmsNotification method notificationSender is available {} ", notificationSender != null);
 
-        notificationLog(notification, "sms", StringUtils.right(notification.getMobile(),4), wrapper);
+        notificationLog(notification, "sms", StringUtils.getReducedPhoneNumberforLogs(notification.getMobile()), wrapper);
 
         return notificationHandler.sendNotification(wrapper, smsTemplateId, "SMS", sendNotification);
     }
@@ -197,9 +198,10 @@ public class SendNotificationService {
                             wrapper.getNewSscsCaseData()
                     );
 
+
             log.info("In sendEmailNotification method notificationSender is available {} ", notificationSender != null);
             notificationLog(notification, "email",
-                    StringUtils.left(notification.getEmail(),3) + "..." + notification.getEmail().substring(notification.getEmail().indexOf("@"), notification.getEmail().indexOf("@")+3) + "...",
+                    StringUtils.getReducedEmailforLogs(notification.getEmail()),
                     wrapper);
 
             return notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);

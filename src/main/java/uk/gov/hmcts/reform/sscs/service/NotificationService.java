@@ -40,6 +40,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
+import uk.gov.hmcts.reform.sscs.utility.StringUtils;
 
 @Service
 @Slf4j
@@ -130,25 +131,25 @@ public class NotificationService {
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper) {
         overrideNotificationType(notificationWrapper);
         String subscriptionTypes = notificationWrapper.getSubscriptionsBasedOnNotificationType().stream()
-            .map(sub -> String.format("Party: %s, Entity %s, Party Id %s, Subscription Type %s, Subscription %s",
-                Optional.ofNullable(sub.getParty()).map(Object::getClass).orElse(null),
-                Optional.ofNullable(sub.getEntity()).map(Object::getClass).orElse(null),
-                sub.getPartyId(),
-                sub.getSubscriptionType(),
-                sub.getSubscription().getWantSmsNotifications(),
-                sub.getSubscription().getTya(),
-                StringUtils.left(sub.getSubscription().getEmail(),3) + "..." + sub.getSubscription().getEmail().substring(sub.getSubscription().getEmail().indexOf("@"),sub.getSubscription().getEmail().indexOf("@")+3) + "...",
-                StringUtils.right(sub.getSubscription().getMobile(),4),
-                sub.getSubscription().getSubscribeEmail(),
-                sub.getSubscription().getSubscribeSms(),
-                sub.getSubscription().getReason(),
-                sub.getSubscription().getLastLoggedIntoMya()))
+            .map(sub -> {
+                if(sub.getSubscription()!=null){
+                        return String.format("Subscription Type %s, SubscribeEmail %s Email %s SubscribeSMS %s Mobile %s",
+                            sub.getSubscriptionType(),
+                            sub.getSubscription().getSubscribeEmail(),
+                            StringUtils.getReducedEmailforLogs(sub.getSubscription().getEmail()),
+                            sub.getSubscription().getSubscribeSms(),
+                            StringUtils.getReducedPhoneNumberforLogs(sub.getSubscription().getMobile()));
+                    }
+                        return String.format("Subscription Type %s", sub.getSubscriptionType());
+                    }
+            )
             .collect(Collectors.joining("\n", "\n", ""));
 
         log.info("Processing for the Notification Type {} and Case Id {} the following subscriptions: {}",
             notificationWrapper.getNotificationType(),
             notificationWrapper.getCaseId(),
-            subscriptionTypes);
+            subscriptionTypes
+                );
 
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
