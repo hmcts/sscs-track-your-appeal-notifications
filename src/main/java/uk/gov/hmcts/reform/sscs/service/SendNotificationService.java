@@ -179,7 +179,7 @@ public class SendNotificationService {
                 );
         log.info("In sendSmsNotification method notificationSender is available {} ", notificationSender != null);
 
-        notificationLog(notification, "sms", StringUtils.getReducedMobileforLogs(notification.getMobile()), wrapper);
+        notificationLog(notification, "sms", StringUtils.getMaskedMobile(notification.getMobile()), wrapper);
 
         return notificationHandler.sendNotification(wrapper, smsTemplateId, "SMS", sendNotification);
     }
@@ -200,7 +200,7 @@ public class SendNotificationService {
 
             log.info("In sendEmailNotification method notificationSender is available {} ", notificationSender != null);
             notificationLog(notification, "email",
-                    StringUtils.getReducedEmailforLogs(notification.getEmail()),
+                    StringUtils.getMaskedEmail(notification.getEmail()),
                     wrapper);
 
             return notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);

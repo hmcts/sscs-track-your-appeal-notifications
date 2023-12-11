@@ -134,9 +134,9 @@ public class NotificationService {
                         return String.format("Subscription Type %s, SubscribeEmail %s Email %s SubscribeSMS %s Mobile %s",
                             sub.getSubscriptionType(),
                             sub.getSubscription().getSubscribeEmail(),
-                            StringUtils.getReducedEmailforLogs(sub.getSubscription().getEmail()),
+                            StringUtils.getMaskedEmail(sub.getSubscription().getEmail()),
                             sub.getSubscription().getSubscribeSms(),
-                            StringUtils.getReducedMobileforLogs(sub.getSubscription().getMobile()));
+                            StringUtils.getMaskedMobile(sub.getSubscription().getMobile()));
                     }
                 return String.format("Subscription Type %s", sub.getSubscriptionType());
             }
