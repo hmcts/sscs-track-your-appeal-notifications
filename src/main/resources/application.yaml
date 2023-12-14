@@ -576,8 +576,6 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-ENG-00784.docx
-    postHearingAppSorWritten:
-      docmosisId: TB-SCS-LET-ENG-Statement-Of-Reasons-Outcome.docx
     libertyToApplyGranted:
       docmosisId: TB-SCS-LET-ENG-Liberty-to-Apply-Granted-Refused.docx
     libertyToApplyRefused:
@@ -1200,8 +1198,6 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-WEL-00787.docx
-    postHearingAppSorWritten:
-      docmosisId: TB-SCS-LET-WEL-Statement-Of-Reasons-Outcome.docx
     libertyToApplyGranted:
       docmosisId: TB-SCS-LET-WEL-Liberty-to-Apply-Granted-Refused.docx
     libertyToApplyRefused:
@@ -1491,7 +1487,6 @@ pdf-service:
       decisionIssued: 'TB-SCS-GNO-ENG-00012.docx'
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
       issueAdjournmentNotice: 'TB-SCS-GNO-ENG-00012.docx'
-      postHearingAppSorWritten: 'TB-SCS-GNO-ENG-00012.docx'
       validAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
       dwpUploadResponse: 'TB-SCS-GNO-ENG-00012.docx'
       resendAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
@@ -1525,7 +1520,6 @@ pdf-service:
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
       issueFinalDecisionWelsh: 'TB-SCS-GNO-WEL-00733.docx'
       issueAdjournmentNoticeWelsh: 'TB-SCS-GNO-WEL-00479.docx'
-      postHearingAppSorWritten: 'TB-SCS-GNO-WEL-00479.docx'
       validAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
       dwpUploadResponse: 'TB-SCS-GNO-WEL-00479.docx'
       resendAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
