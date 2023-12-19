@@ -388,8 +388,6 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.PERMISSION_TO_APPEAL_GRANTED));
         } else if (PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.PERMISSION_TO_APPEAL_REFUSED));
-        } else if (POST_HEARING_APP_SOR_WRITTEN.equals(notificationEventType)) {
-            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.STATEMENT_OF_REASONS));
         } else if (SET_ASIDE_GRANTED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.SET_ASIDE_GRANTED));
         } else if (SET_ASIDE_REFUSED.equals(notificationEventType)) {

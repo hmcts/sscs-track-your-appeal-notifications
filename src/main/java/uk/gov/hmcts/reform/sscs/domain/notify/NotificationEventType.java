@@ -55,7 +55,6 @@ public enum NotificationEventType {
     PERMISSION_TO_APPEAL_GRANTED(EventType.PERMISSION_TO_APPEAL_GRANTED, true, true, true, false, false, 0),
     PERMISSION_TO_APPEAL_REFUSED(EventType.PERMISSION_TO_APPEAL_REFUSED, true, true, true, false, false, 0),
     PERMISSION_TO_APPEAL_REQUEST(EventType.PERMISSION_TO_APPEAL_REQUEST,true, true, true, false, false, 0),
-    POST_HEARING_APP_SOR_WRITTEN(EventType.POST_HEARING_APP_SOR_WRITTEN, true, true, true, true, false, 0),
     POSTPONEMENT(EventType.POSTPONED, true, false, false, false, false, 0),
     POSTPONEMENT_GRANTED(EventType.POSTPONEMENT_GRANTED, true, true, true, true, false, 0),
     POSTPONEMENT_REFUSED(EventType.POSTPONEMENT_REFUSED, true, true, true, true, false, 0),
