@@ -1330,6 +1330,6 @@
     }
   },
   "case_details_before": null,
-  "event_id": "actionPostponementRequest",
+  "event_id": "postponementRefused",
   "ignore_warning": null
 }
