@@ -576,8 +576,6 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-ENG-00784.docx
-    postHearingAppSorWritten:
-      docmosisId: TB-SCS-LET-ENG-Statement-Of-Reasons-Outcome.docx
     libertyToApplyGranted:
       docmosisId: TB-SCS-LET-ENG-Liberty-to-Apply-Granted-Refused.docx
     libertyToApplyRefused:
@@ -1200,8 +1198,6 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-WEL-00787.docx
-    postHearingAppSorWritten:
-      docmosisId: TB-SCS-LET-WEL-Statement-Of-Reasons-Outcome.docx
     libertyToApplyGranted:
       docmosisId: TB-SCS-LET-WEL-Liberty-to-Apply-Granted-Refused.docx
     libertyToApplyRefused:
@@ -1459,6 +1455,7 @@ feature.covid19: ${COVID_19_NOTIFICATION_FEATURE:false}
 feature.secure-doc-store.enabled: ${SECURE_DOC_STORE_FEATURE:false}
 feature.postHearings.enabled: ${POST_HEARINGS_FEATURE:false}
 feature.postHearingsB.enabled: ${POST_HEARINGS_B_FEATURE:false}
+feature.elinksV2.enabled: false
 
 letterAsync:
   maxAttempts: ${LETTER_ASYNC_MAX_ATTEMPTS:5}
@@ -1490,7 +1487,6 @@ pdf-service:
       decisionIssued: 'TB-SCS-GNO-ENG-00012.docx'
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
       issueAdjournmentNotice: 'TB-SCS-GNO-ENG-00012.docx'
-      postHearingAppSorWritten: 'TB-SCS-GNO-ENG-00012.docx'
       validAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
       dwpUploadResponse: 'TB-SCS-GNO-ENG-00012.docx'
       resendAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
@@ -1524,7 +1520,6 @@ pdf-service:
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
       issueFinalDecisionWelsh: 'TB-SCS-GNO-WEL-00733.docx'
       issueAdjournmentNoticeWelsh: 'TB-SCS-GNO-WEL-00479.docx'
-      postHearingAppSorWritten: 'TB-SCS-GNO-WEL-00479.docx'
       validAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
       dwpUploadResponse: 'TB-SCS-GNO-WEL-00479.docx'
       resendAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
