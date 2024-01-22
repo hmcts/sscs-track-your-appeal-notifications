@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-    <suppress until = "2024-01-20">
+    <suppress until = "2024-02-22">
         <cve>CVE-2022-42004</cve>
         <cve>CVE-2023-39017</cve>
-        <cve>CVE-2022-45688</cve>
         <cve>CVE-2022-42003</cve>
         <cve>CVE-2023-5072</cve>
         <cve>CVE-2023-34462</cve>
@@ -14,7 +13,6 @@
         <cve>CVE-2020-36518</cve>
         <cve>CVE-2023-46589</cve>
         <cve>CVE-2023-3635</cve>
-        <cve>CVE-2023-45960</cve>
         <cve>CVE-2023-33202</cve>
         <cve>CVE-2023-35116</cve>
         <cve>CVE-2021-46877</cve>
