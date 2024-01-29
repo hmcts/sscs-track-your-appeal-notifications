@@ -155,7 +155,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendEvidenceReceivedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EVIDENCE_RECEIVED);
 
@@ -167,7 +166,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
 
     @Test
-    @Ignore
     public void shouldSendHearingPostponedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(POSTPONEMENT);
 
@@ -175,7 +173,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendHearingAdjournedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(ADJOURNED);
 
@@ -186,7 +183,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendSubscriptionCreatedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SUBSCRIPTION_CREATED);
 
@@ -194,7 +190,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendSubscriptionUpdatedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SUBSCRIPTION_UPDATED);
 
@@ -202,7 +197,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppealCreatedAppellantNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SYA_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId, appealCreatedAppellantSmsId);
@@ -211,7 +205,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendValidAppealCreatedAppellantNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(VALID_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId, appealCreatedAppellantSmsId);
@@ -220,7 +213,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppealCreatedAppointeeNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SYA_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "AppointeeCallback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailId, appealCreatedAppointeeSmsId);
@@ -229,7 +221,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendValidAppealCreatedAppointeeNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(VALID_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "AppointeeCallback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailId, appealCreatedAppointeeSmsId);
@@ -238,7 +229,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     @Parameters({
         "pip,judge\\, doctor and disability expert",
         "esa,judge and a doctor",
@@ -261,7 +251,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldNotSendPaperDwpResponseReceivedNotificationIfNotSubscribed() throws NotificationClientException, IOException {
         simulateCcdCallback(DWP_RESPONSE_RECEIVED, RESPONSE_RECEIVED_PAPER_PATH + "paper-no-subscriptions-"
                 + DWP_RESPONSE_RECEIVED.getId() + "Callback.json");
@@ -273,7 +262,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeEvidenceReminderForOralCaseNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EVIDENCE_REMINDER,
                 "appointee/oral-" + EVIDENCE_REMINDER.getId() + "Callback.json");
@@ -293,7 +281,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeEvidenceReminderForPaperCaseNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EVIDENCE_REMINDER,
                 "appointee/paper-" + EVIDENCE_REMINDER.getId() + "Callback.json");
@@ -313,7 +300,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppellantSubscriptionUpdateNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SUBSCRIPTION_UPDATED,
                 "appellant-" + SUBSCRIPTION_UPDATED.getId() + "Callback.json");
@@ -331,7 +317,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeSubscriptionUpdateNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SUBSCRIPTION_UPDATED,
                 "appointee-" + SUBSCRIPTION_UPDATED.getId() + "Callback.json");
@@ -347,7 +332,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeEvidenceReceivedPaperNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EVIDENCE_RECEIVED,
                 "appointee/paper-" + EVIDENCE_RECEIVED.getId() + "Callback.json");
@@ -362,7 +346,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeHearingAdjournedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(ADJOURNED,
                 "appointee/" + ADJOURNED.getId() + "Callback.json");
@@ -376,7 +359,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeAppealLapsedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_LAPSED,
                 "appointee/" + APPEAL_LAPSED.getId() + "Callback.json");
@@ -395,7 +377,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeDwpAppealLapsedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_LAPSED,
                 "appointee/dwpAppealLapsedCallback.json");
@@ -410,7 +391,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeResponseReceivedForPaperCaseNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(DWP_RESPONSE_RECEIVED,
                 "appointee/" + DWP_RESPONSE_RECEIVED.getId() + "Callback.json");
@@ -455,7 +435,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeEvidenceReceivedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EVIDENCE_RECEIVED,
                 "appointee/" + EVIDENCE_RECEIVED.getId() + "Callback.json");
@@ -466,7 +445,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeHearingPostponedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(POSTPONEMENT,
                 "appointee/" + POSTPONEMENT.getId() + "Callback.json");
@@ -478,7 +456,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSaveReasonableAdjustmentNotificationForAppellant() throws IOException {
         simulateCcdCallback(APPEAL_RECEIVED, APPEAL_RECEIVED.getId() + "AppellantReasonableAdjustmentCallback.json");
 
@@ -493,7 +470,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSaveReasonableAdjustmentNotificationForAppellantAndRep() throws IOException {
         simulateCcdCallback(APPEAL_RECEIVED, APPEAL_RECEIVED.getId() + "AppellantRepReasonableAdjustmentCallback.json");
 

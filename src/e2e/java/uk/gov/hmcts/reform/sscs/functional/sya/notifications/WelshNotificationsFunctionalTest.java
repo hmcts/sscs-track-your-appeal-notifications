@@ -176,7 +176,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendEvidenceReceivedNotificationWelsh() throws NotificationClientException, IOException {
         simulateWelshCcdCallback(EVIDENCE_RECEIVED);
         tryFetchNotificationsForTestCase(
@@ -188,7 +187,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendPaperEvidenceReceivedNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(EVIDENCE_RECEIVED, "paper-" + EVIDENCE_RECEIVED.getId() + "CallbackWelsh.json");
         tryFetchNotificationsForTestCase(
@@ -201,7 +199,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
 
     @Test
-    @Ignore
     public void shouldSendHearingPostponedNotificationWelsh() throws NotificationClientException, IOException {
         simulateWelshCcdCallback(POSTPONEMENT);
 
@@ -224,7 +221,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
 
     @Test
-    @Ignore
     public void shouldSendHearingAdjournedNotificationWelsh() throws NotificationClientException, IOException {
         simulateWelshCcdCallback(ADJOURNED);
 
@@ -237,7 +233,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendSubscriptionCreatedNotificationWelsh() throws NotificationClientException, IOException {
 
         simulateWelshCcdCallback(SUBSCRIPTION_CREATED);
@@ -247,7 +242,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
 
     @Test
-    @Ignore
     public void shouldSendSubscriptionUpdatedNotificationWelsh() throws NotificationClientException, IOException {
         simulateWelshCcdCallback(SUBSCRIPTION_UPDATED);
 
@@ -255,7 +249,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppealCreatedAppellantNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(SYA_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "CallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailIdWelsh, appealCreatedAppellantSmsIdWelsh);
@@ -265,7 +258,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
 
     @Test
-    @Ignore
     public void shouldSendValidAppealCreatedAppellantNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(VALID_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "CallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailIdWelsh, appealCreatedAppellantSmsIdWelsh);
@@ -274,7 +266,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppealCreatedAppointeeNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(SYA_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "AppointeeCallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailIdWelsh, appealCreatedAppointeeSmsIdWelsh);
@@ -284,7 +275,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
 
     @Test
-    @Ignore
     public void shouldSendValidAppealCreatedAppointeeNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(VALID_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "AppointeeCallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailIdWelsh, appealCreatedAppointeeSmsIdWelsh);
@@ -293,7 +283,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeEvidenceReminderForPaperCaseNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EVIDENCE_REMINDER,
                 "appointee/paper-" + EVIDENCE_REMINDER.getId() + "CallbackWelsh.json");
@@ -315,7 +304,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendPaperAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_DORMANT, "paper-" + APPEAL_DORMANT.getId() + "CallbackWelsh.json");
         tryFetchNotificationsForTestCase(
@@ -326,14 +314,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendOralAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_DORMANT, "oral-" + APPEAL_DORMANT.getId() + "CallbackWelsh.json");
         tryFetchNotificationsForTestCase(appealDormantOralJointPartyEmailTemplateIdWelsh, appealDormantOralAppellantEmailTemplateIdWelsh);
     }
 
     @Test
-    @Ignore
     public void shouldSendAppealLapsedNotificationToAppointeeJointPartyAndRep() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_LAPSED,
                 "appointee/" + APPEAL_LAPSED.getId() + "CallbackWelsh.json");
@@ -357,7 +343,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_WITHDRAWN,
                 "appointee/" + APPEAL_WITHDRAWN.getId() + "CallbackWelsh.json");
@@ -384,7 +369,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldSendAppointeeEvidenceReminderForOralCaseNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EVIDENCE_REMINDER,
                 "appointee/oral-" + EVIDENCE_REMINDER.getId() + "CallbackWelsh.json");
@@ -406,7 +390,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore
     @Parameters(method = "docmosisTestSetup")
     public void shouldSendDocmosisLettersViaGovNotify(NotificationEventType notificationEventType,
                                                       Optional<String> resourceParam,
