@@ -7,22 +7,23 @@ java:
   keyVaults:
     sscs:
       secrets:
-      - idam-api
-      - idam-oauth-user
-      - idam-redirect
-      - idam-sscs-systemupdate-user
-      - idam-sscs-systemupdate-password
-      - sscs-email-mac-secret-text
-      - idam-sscs-oauth2-client-secret
-      - sscs-s2s-secret
-      - s2s-micro
-      - evidence-share-topic-shared-access-key
-      - docmosis-api-key
-      - notification-job-scheduler-db-password
-      - notification-key
-      - notification-test-key
-      - name: app-insights-connection-string
-        alias: app-insights-connection-string
+        - idam-api
+        - idam-oauth-user
+        - idam-redirect
+        - idam-sscs-systemupdate-user
+        - idam-sscs-systemupdate-password
+        - sscs-email-mac-secret-text
+        - idam-sscs-oauth2-client-secret
+        - sscs-s2s-secret
+        - s2s-micro
+        - evidence-share-topic-shared-access-key
+        - docmosis-api-key
+        - notification-key
+        - notification-test-key
+        - name: tya-notif-POSTGRES-PASS-FLEX-V15
+          alias: JOB_SCHEDULER_DB_PASSWORD
+        - name: app-insights-connection-string
+          alias: app-insights-connection-string
   environment:
     REFORM_TEAM: sscs
     REFORM_SERVICE_NAME: tya-notifications
@@ -36,9 +37,9 @@ java:
     CORE_CASE_DATA_CASE_TYPE_ID: Benefit
     JOB_SCHEDULER_POLL_INTERVAL: "30000"
     JOB_SCHEDULER_DB_PORT: "5432"
-    JOB_SCHEDULER_DB_USERNAME: "notification@sscs-tya-notif-postgres-v11-db-{{ .Values.global.environment }}"
-    JOB_SCHEDULER_DB_NAME: "notification"
-    JOB_SCHEDULER_DB_HOST: "sscs-tya-notif-postgres-v11-db-{{ .Values.global.environment }}.postgres.database.azure.com"
+    JOB_SCHEDULER_DB_USERNAME: pgadmin
+    JOB_SCHEDULER_DB_NAME: notification
+    JOB_SCHEDULER_DB_HOST: sscs-tya-notif-postgres-v15-db-{{ .Values.global.environment }}.postgres.database.azure.com
     IDAM_OAUTH2_REDIRECT_URL: "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
     EVIDENCE_SUBMISSION_INFO_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/evidence/appeal_id"
     SSCS_MANAGE_EMAILS_LINK: "https://sscs-cor.{{ .Values.global.environment }}.platform.hmcts.net/manage-email-notifications/mac"
