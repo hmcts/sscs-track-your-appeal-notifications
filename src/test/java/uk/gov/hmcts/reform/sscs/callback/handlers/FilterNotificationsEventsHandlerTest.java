@@ -13,9 +13,10 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.GAPS;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.LIST_ASSIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DEATH_OF_APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_GRANTED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_REFUSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROVIDE_APPOINTEE_DETAILS;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
 
@@ -114,6 +115,8 @@ public class FilterNotificationsEventsHandlerTest {
         "JOINT_PARTY_ADDED",
         "NON_COMPLIANT",
         "POSTPONEMENT",
+        "POSTPONEMENT_GRANTED",
+        "POSTPONEMENT_REFUSED",
         "PROCESS_AUDIO_VIDEO",
         "PROCESS_AUDIO_VIDEO_WELSH",
         "REISSUE_DOCUMENT",
@@ -152,7 +155,11 @@ public class FilterNotificationsEventsHandlerTest {
     @Test
     @Parameters({"grant", "refuse"})
     public void willHandleActionPostponementRequestEvents(String actionSelected) {
-        callback.setNotificationEventType(ACTION_POSTPONEMENT_REQUEST);
+        if (actionSelected.equals("grant")) {
+            callback.setNotificationEventType(POSTPONEMENT_GRANTED);
+        } else if (actionSelected.equals("refuse")) {
+            callback.setNotificationEventType(POSTPONEMENT_REFUSED);
+        }
         oldCaseData.getPostponementRequest().setActionPostponementRequestSelected(actionSelected);
 
         willHandle(callback);
@@ -160,7 +167,7 @@ public class FilterNotificationsEventsHandlerTest {
 
     @Test
     public void willNotHandleActionPostponementRequestEvents_sendToJudgeAction() {
-        callback.setNotificationEventType(ACTION_POSTPONEMENT_REQUEST);
+        callback.setNotificationEventType(POSTPONEMENT_GRANTED);
         oldCaseData.getPostponementRequest().setActionPostponementRequestSelected("sendToJudge");
 
         willNotHandle(callback);
