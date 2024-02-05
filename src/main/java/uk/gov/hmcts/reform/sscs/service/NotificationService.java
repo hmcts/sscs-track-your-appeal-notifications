@@ -211,9 +211,8 @@ public class NotificationService {
                     && !YesNo.YES.equals(wrapper.getNewSscsCaseData().getReissueArtifactUi().getResendToRepresentative())) {
                 return false;
             }
-            if (OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType()) && !isResendTo(subscriptionWithType.getPartyId(), wrapper.getNewSscsCaseData())) {
-                return false;
-            }
+
+            return !OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType()) || isResendTo(subscriptionWithType.getPartyId(), wrapper.getNewSscsCaseData());
         }
         return true;
     }
@@ -222,7 +221,7 @@ public class NotificationService {
         return nonNull(partyId)
                 && emptyIfNull(sscsCaseData.getReissueArtifactUi().getOtherPartyOptions()).stream()
                         .map(OtherPartyOption::getValue)
-                        .filter(otherPartyOptionDetails -> String.valueOf(partyId).equals(otherPartyOptionDetails.getOtherPartyOptionId()))
+                        .filter(otherPartyOptionDetails -> partyId.equals(otherPartyOptionDetails.getOtherPartyOptionId()))
                         .anyMatch(otherPartyOptionDetails -> YesNo.isYes(otherPartyOptionDetails.getResendToOtherParty()));
     }
 
@@ -390,11 +389,29 @@ public class NotificationService {
                 notificationWrapper.getSscsCaseDataWrapper().getState());
             return false;
         }
+
+        if (HEARING_BOOKED.equals(notificationType)) {
+            HearingDetails newHearing = notificationWrapper.getNewSscsCaseData().getLatestHearing().getValue();
+            HearingDetails oldHearing = notificationWrapper.getOldSscsCaseData().getLatestHearing().getValue();
+
+            if (nonNull(oldHearing) && nonNull(oldHearing.getHearingId()) && nonNull(newHearing.getHearingId())
+                    && newHearing.getHearingId().equals(oldHearing.getHearingId())
+                    && !isHearingBookedInformationTheSame(newHearing, oldHearing)) {
+                return false;
+            }
+        }
+
         log.info("Notification valid to send for case id {} and event {} in state {}",
             notificationWrapper.getCaseId(),
             notificationType.getId(),
             notificationWrapper.getSscsCaseDataWrapper().getState());
         return true;
+    }
+
+    private boolean isHearingBookedInformationTheSame(HearingDetails newHearing, HearingDetails oldHearing) {
+        return newHearing.getHearingDateTime().equals(oldHearing.getHearingDateTime())
+                && newHearing.getEpimsId().equals(oldHearing.getEpimsId())
+                && newHearing.getHearingChannel().equals(oldHearing.getHearingChannel());
     }
 
     private boolean isDigitalCase(final NotificationWrapper notificationWrapper) {
