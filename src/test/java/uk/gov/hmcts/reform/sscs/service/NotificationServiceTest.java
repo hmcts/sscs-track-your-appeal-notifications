@@ -32,7 +32,6 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED;
@@ -932,6 +931,9 @@ public class NotificationServiceTest {
                 .otherParties(otherParties)
                 .hearings(singletonList(Hearing.builder().build()))
                 .createdInGapsFrom(READY_TO_LIST.getId())
+                .schedulingAndListingFields(SchedulingAndListingFields.builder()
+                        .hearingRoute(HearingRoute.LIST_ASSIST)
+                        .build())
                 .build();
 
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
@@ -1938,9 +1940,8 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"ACTION_POSTPONEMENT_REQUEST", "ACTION_POSTPONEMENT_REQUEST_WELSH"})
-    public void willNotSendHearingNotifications_whenGapsAndActionPostponementRequest(NotificationEventType notificationEventType) {
-        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(notificationEventType, APPELLANT_WITH_ADDRESS, null, null);
+    public void willNotSendHearingNotifications_whenGapsAndActionPostponementRequest() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(POSTPONEMENT, APPELLANT_WITH_ADDRESS, null, null);
         ccdNotificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().setHearingRoute(HearingRoute.GAPS);
 
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
@@ -1956,7 +1957,7 @@ public class NotificationServiceTest {
 
     @Test
     public void willSendHearingNotifications_whenCaseIsListAssistAndActionPostponementRequest() {
-        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(ACTION_POSTPONEMENT_REQUEST, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(POSTPONEMENT, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
         ccdNotificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().setHearingRoute(HearingRoute.LIST_ASSIST);
         ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
         ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom("validAppeal");

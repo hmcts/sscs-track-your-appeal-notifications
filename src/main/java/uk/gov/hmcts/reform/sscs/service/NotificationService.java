@@ -368,7 +368,7 @@ public class NotificationService {
             return false;
         }
 
-        if ((ACTION_POSTPONEMENT_REQUEST.equals(notificationType) || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationType))
+        if (POSTPONEMENT.equals(notificationType)
                 && !LIST_ASSIST.equals(notificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().getHearingRoute())) {
             log.info("Cannot complete notification {} as the case is not set to list assist for case {}.",
                     notificationType.getId(), notificationWrapper.getCaseId());
