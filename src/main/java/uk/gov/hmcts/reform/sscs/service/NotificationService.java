@@ -6,6 +6,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.LIST_ASSIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_ACTION_FURTHER_EVIDENCE;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_FOR_DORMANT_CASES;
@@ -364,6 +365,13 @@ public class NotificationService {
                 && !PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE.contains(processAudioVisualAction)) {
             log.info("Cannot complete notification {} since the action {} does not require a notice to be sent for caseId {}.",
                     notificationType.getId(), processAudioVisualAction, notificationWrapper.getCaseId());
+            return false;
+        }
+
+        if ((ACTION_POSTPONEMENT_REQUEST.equals(notificationType) || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationType))
+                && !LIST_ASSIST.equals(notificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().getHearingRoute())) {
+            log.info("Cannot complete notification {} as the case is not set to list assist for case {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
             return false;
         }
 
