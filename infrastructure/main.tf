@@ -52,6 +52,7 @@ module "notification-scheduler-db-flexible" {
   component     = var.component
   name          = "${var.product}-${var.component}-postgres-v15-db"
   business_area = "CFT" # sds or cft
+  force_user_permissions_trigger = "1"
   # The original subnet is full, this is required to use the new subnet for new databases
   subnet_suffix = "expanded"
   pgsql_databases = [
