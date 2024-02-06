@@ -1586,10 +1586,11 @@ public class NotificationServiceTest {
     }
 
     private void addHearings(CcdNotificationWrapper ccdNotificationWrapper) {
+        String currentTime = LocalTime.now().toString();
         ccdNotificationWrapper.getOldSscsCaseData().setHearings(List.of(Hearing.builder().value(HearingDetails.builder()
                 .hearingId("0")
                 .hearingDate(LocalDate.now().toString())
-                .time(LocalTime.now().toString())
+                .time(currentTime)
                 .epimsId("324")
                 .hearingChannel(HearingChannel.PAPER)
                 .build()).build()));
@@ -1597,7 +1598,7 @@ public class NotificationServiceTest {
         ccdNotificationWrapper.getNewSscsCaseData().setHearings(List.of(Hearing.builder().value(HearingDetails.builder()
                 .hearingId("0")
                 .hearingDate(LocalDate.now().toString())
-                .time(LocalTime.now().toString())
+                .time(currentTime)
                 .epimsId("324")
                 .hearingChannel(HearingChannel.PAPER)
                 .build()).build()));
