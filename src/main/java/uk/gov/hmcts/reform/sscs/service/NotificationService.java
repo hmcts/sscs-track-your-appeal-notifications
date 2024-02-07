@@ -394,7 +394,8 @@ public class NotificationService {
             HearingDetails newHearing = notificationWrapper.getNewSscsCaseData().getLatestHearing().getValue();
             HearingDetails oldHearing = notificationWrapper.getOldSscsCaseData().getLatestHearing().getValue();
 
-            if (nonNull(oldHearing) && nonNull(oldHearing.getHearingId()) && nonNull(newHearing.getHearingId())
+            if (nonNull(oldHearing) && nonNull(oldHearing.getHearingId())
+                    && nonNull(newHearing) && nonNull(newHearing.getHearingId())
                     && newHearing.getHearingId().equals(oldHearing.getHearingId())
                     && !isHearingBookedInformationTheSame(newHearing, oldHearing)) {
                 return false;
