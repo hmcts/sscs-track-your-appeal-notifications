@@ -206,6 +206,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     private List<String> getEligiblePartyMembersInTheCaseToSendNotification(SscsCaseData caseData) {
+
+
+
         List<String> eligiblePartyMembers =  new ArrayList<>();
         // the party members must exist in the case and the user has selected to send the notification via the radio button in issue direction notice.
         if (YesNo.isYes(caseData.getSendDirectionNoticeToAppellantOrAppointee())) {
