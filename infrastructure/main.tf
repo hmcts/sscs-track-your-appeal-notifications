@@ -3,7 +3,11 @@ provider "azurerm" {
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
   skip_provider_registration = true
   alias                      = "postgres_network"
   subscription_id            = var.aks_subscription_id
@@ -29,18 +33,7 @@ locals {
   azureVaultName = "sscs-${var.env}"
 }
 
-module "db-notif" {
-  source             = "git@github.com:hmcts/cnp-module-postgres?ref=master"
-  product            = var.product
-  name               = "${var.product}-${var.component}-postgres-v11-db"
-  location           = var.location
-  env                = var.env
-  postgresql_user    = var.postgresql_user
-  postgresql_version = "11"
-  database_name      = var.database_name
-  common_tags        = var.common_tags
-  subscription       = var.subscription
-}
+
 
 module "notification-scheduler-db-flexible" {
   providers = {
