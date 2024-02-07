@@ -18,17 +18,6 @@ data "azurerm_key_vault" "sscs_key_vault" {
   resource_group_name = local.azureVaultName
 }
 
-resource "azurerm_key_vault_secret" "notification_job_scheduler_db_password" {
-  name         = "notification-job-scheduler-db-password"
-  value        = module.db-notif.postgresql_password
-  key_vault_id = data.azurerm_key_vault.sscs_key_vault.id
-
-  content_type = "secret"
-  tags = merge(var.common_tags, {
-    "source" : "database ${module.db-notif.postgresql_database}"
-  })
-}
-
 locals {
   azureVaultName = "sscs-${var.env}"
 }
