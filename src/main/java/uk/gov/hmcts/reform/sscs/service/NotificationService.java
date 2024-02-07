@@ -391,14 +391,19 @@ public class NotificationService {
         }
 
         if (HEARING_BOOKED.equals(notificationType)) {
-            HearingDetails newHearing = notificationWrapper.getNewSscsCaseData().getLatestHearing().getValue();
-            HearingDetails oldHearing = notificationWrapper.getOldSscsCaseData().getLatestHearing().getValue();
+            Hearing newHearing = notificationWrapper.getNewSscsCaseData().getLatestHearing();
+            Hearing oldHearing = notificationWrapper.getOldSscsCaseData().getLatestHearing();
 
-            if (nonNull(oldHearing) && nonNull(oldHearing.getHearingId())
-                    && nonNull(newHearing) && nonNull(newHearing.getHearingId())
-                    && newHearing.getHearingId().equals(oldHearing.getHearingId())
-                    && !isHearingBookedInformationTheSame(newHearing, oldHearing)) {
-                return false;
+            if (nonNull(newHearing) && nonNull(oldHearing)) {
+                HearingDetails newHearingDetails = newHearing.getValue();
+                HearingDetails oldHearingDetails = oldHearing.getValue();
+
+                if (nonNull(oldHearingDetails) && nonNull(oldHearingDetails.getHearingId())
+                        && nonNull(newHearingDetails) && nonNull(newHearingDetails.getHearingId())
+                        && newHearingDetails.getHearingId().equals(oldHearingDetails.getHearingId())
+                        && !isHearingBookedInformationTheSame(newHearingDetails, oldHearingDetails)) {
+                    return false;
+                }
             }
         }
 
