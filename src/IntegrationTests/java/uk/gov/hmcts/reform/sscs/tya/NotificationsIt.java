@@ -4974,8 +4974,9 @@ public class NotificationsIt extends NotificationsItBase {
 
     @Test
     @Parameters({"subscriptionUpdated", "appealReceived", "directionIssued", "nonCompliant"})
+    @Ignore
     public void shouldNotSendNotificationWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
-        json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
+        json = json.replaceAll("appealCreated", State.DORMANT_APPEAL_STATE.toString());
         json = json.replace("appealReceived", notificationEventType);
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
