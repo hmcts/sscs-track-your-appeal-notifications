@@ -57,7 +57,7 @@ public class NotificationController {
                 callback.getCaseDetails().getCaseData(),
                 caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
                 getNotificationByCcdEvent(callback.getEvent()),
-                callback.getCaseDetails().getState());
+                callback.getCaseDetails().getCaseData().getState());
 
             log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
