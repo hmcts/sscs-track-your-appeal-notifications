@@ -223,7 +223,7 @@ public class NotificationService {
         return nonNull(partyId)
                 && emptyIfNull(sscsCaseData.getReissueArtifactUi().getOtherPartyOptions()).stream()
                         .map(OtherPartyOption::getValue)
-                        .filter(otherPartyOptionDetails -> String.valueOf(partyId).equals(otherPartyOptionDetails.getOtherPartyOptionId()))
+                        .filter(otherPartyOptionDetails -> partyId.equals(otherPartyOptionDetails.getOtherPartyOptionId()))
                         .anyMatch(otherPartyOptionDetails -> YesNo.isYes(otherPartyOptionDetails.getResendToOtherParty()));
     }
 
@@ -398,11 +398,35 @@ public class NotificationService {
                 notificationWrapper.getSscsCaseDataWrapper().getState());
             return false;
         }
+
+        if (HEARING_BOOKED.equals(notificationType)) {
+            Hearing newHearing = notificationWrapper.getNewSscsCaseData().getLatestHearing();
+            Hearing oldHearing = notificationWrapper.getOldSscsCaseData().getLatestHearing();
+
+            if (nonNull(newHearing) && nonNull(oldHearing)) {
+                HearingDetails newHearingDetails = newHearing.getValue();
+                HearingDetails oldHearingDetails = oldHearing.getValue();
+
+                if (nonNull(oldHearingDetails) && nonNull(oldHearingDetails.getHearingId())
+                        && nonNull(newHearingDetails) && nonNull(newHearingDetails.getHearingId())
+                        && newHearingDetails.getHearingId().equals(oldHearingDetails.getHearingId())
+                        && !isHearingBookedInformationTheSame(newHearingDetails, oldHearingDetails)) {
+                    return false;
+                }
+            }
+        }
+
         log.info("Notification valid to send for case id {} and event {} in state {}",
             notificationWrapper.getCaseId(),
             notificationType.getId(),
             notificationWrapper.getSscsCaseDataWrapper().getState());
         return true;
+    }
+
+    private boolean isHearingBookedInformationTheSame(HearingDetails newHearing, HearingDetails oldHearing) {
+        return newHearing.getHearingDateTime().equals(oldHearing.getHearingDateTime())
+                && newHearing.getEpimsId().equals(oldHearing.getEpimsId())
+                && newHearing.getHearingChannel().equals(oldHearing.getHearingChannel());
     }
 
     private boolean isDigitalCase(final NotificationWrapper notificationWrapper) {
