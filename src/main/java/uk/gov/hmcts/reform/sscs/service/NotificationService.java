@@ -208,13 +208,13 @@ public class NotificationService {
                     && !YesNo.YES.equals(wrapper.getNewSscsCaseData().getReissueArtifactUi().getResendToAppellant())) {
                 return false;
             }
+
             if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())
                     && !YesNo.YES.equals(wrapper.getNewSscsCaseData().getReissueArtifactUi().getResendToRepresentative())) {
                 return false;
             }
-            if (OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType()) && !isResendTo(subscriptionWithType.getPartyId(), wrapper.getNewSscsCaseData())) {
-                return false;
-            }
+
+            return !OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType()) || isResendTo(subscriptionWithType.getPartyId(), wrapper.getNewSscsCaseData());
         }
         return true;
     }
