@@ -351,6 +351,17 @@ public class NotificationService {
             return false;
         }
 
+        DwpState oldDwpState = notificationWrapper.getOldSscsCaseData().getDwpState();
+
+        if (nonNull(oldDwpState)
+                && oldDwpState.equals(DwpState.FINAL_DECISION_ISSUED)
+                && nonNull(notificationWrapper.getOldSscsCaseData().getState())
+                && notificationWrapper.getOldSscsCaseData().getState().equals(State.DORMANT_APPEAL_STATE)) {
+            log.info("Cannot complete notification {} as the notification has been fired in error for caseId {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
+            return false;
+        }
+
         if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh()
             && (EVENT_TYPES_NOT_FOR_WELSH_CASES.contains(notificationType))) {
             log.info("Cannot complete notification {} as the appeal is Welsh for caseId {}.",

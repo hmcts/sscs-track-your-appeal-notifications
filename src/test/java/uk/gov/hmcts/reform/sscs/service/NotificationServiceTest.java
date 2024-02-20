@@ -187,6 +187,7 @@ public class NotificationServiceTest {
                                 .appellant(APPELLANT_WITH_ADDRESS)
                                 .build()
                 )
+                .dwpState(DwpState.RESPONSE_SUBMITTED_DWP)
                 .subscriptions(Subscriptions.builder().appellantSubscription(subscription).build())
                 .caseReference(CASE_REFERENCE)
                 .createdInGapsFrom(READY_TO_LIST.getId())
@@ -887,7 +888,7 @@ public class NotificationServiceTest {
             NotificationEventType notificationEventType, Subscription appellantSubscription,
             Subscription repsSubscription, Subscription appointeeSubscription, List<CcdValue<OtherParty>> otherParties) {
         return buildNotificationWrapperGivenNotificationTypeAndSubscriptions(notificationEventType,
-                appellantSubscription, repsSubscription, appointeeSubscription, null, otherParties);
+                appellantSubscription, repsSubscription, appointeeSubscription, new SscsCaseData(), otherParties);
     }
 
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
@@ -955,7 +956,7 @@ public class NotificationServiceTest {
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(
             NotificationEventType notificationEventType, Subscription appointeeSubscription,
             Subscription repsSubscription) {
-        return buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(notificationEventType, appointeeSubscription, repsSubscription, null);
+        return buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(notificationEventType, appointeeSubscription, repsSubscription, new SscsCaseData());
     }
 
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(
@@ -2109,6 +2110,7 @@ public class NotificationServiceTest {
                         )
                         .build())
                 .caseReference(CASE_REFERENCE)
+                .dwpState(DwpState.RESPONSE_SUBMITTED_DWP)
                 .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
                         .documentFilename("test.pdf")
                         .documentBinaryUrl("test/binary").build()).build())
