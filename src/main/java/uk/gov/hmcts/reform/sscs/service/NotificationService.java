@@ -351,12 +351,8 @@ public class NotificationService {
             return false;
         }
 
-        DwpState oldDwpState = notificationWrapper.getOldSscsCaseData().getDwpState();
-
-        if (nonNull(oldDwpState)
-                && oldDwpState.equals(DwpState.FINAL_DECISION_ISSUED)
-                && nonNull(notificationWrapper.getOldSscsCaseData().getState())
-                && notificationWrapper.getOldSscsCaseData().getState().equals(State.DORMANT_APPEAL_STATE)) {
+        if (HEARING_BOOKED.equals(notificationType)
+                && DwpState.FINAL_DECISION_ISSUED.equals(notificationWrapper.getNewSscsCaseData().getDwpState())) {
             log.info("Cannot complete notification {} as the notification has been fired in error for caseId {}.",
                     notificationType.getId(), notificationWrapper.getCaseId());
             return false;

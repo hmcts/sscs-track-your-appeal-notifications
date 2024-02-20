@@ -40,6 +40,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT_TO_VALID_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
@@ -1359,6 +1360,22 @@ public class NotificationServiceTest {
     }
 
     @Test
+    public void willNotSendHearingNotifications_whenHearingBookedAndDwpStateIsFinalDecisionIssued() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
+        ccdNotificationWrapper.getNewSscsCaseData().setDwpState(DwpState.FINAL_DECISION_ISSUED);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
+
+        final NotificationService notificationService = new NotificationService(factory, reminderService,
+                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
+        );
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        then(notificationHandler).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
     public void sendAppellantLetterOnAppealReceived() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
         String docmosisId = "docmosis-id.doc";
@@ -2135,6 +2152,7 @@ public class NotificationServiceTest {
                                 .appellant(appellant)
                                 .rep(rep)
                                 .build())
+                .dwpState(DwpState.RESPONSE_SUBMITTED_DWP)
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
                                 .tya(APPEAL_NUMBER)
