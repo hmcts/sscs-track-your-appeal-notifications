@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -20,6 +21,8 @@ import uk.gov.service.notify.NotificationClientException;
 public class SaveCorrespondenceAsyncService {
     private final CcdNotificationsPdfService ccdNotificationsPdfService;
 
+    @Value("${feature.notification.correspondence.v2:false}")
+    boolean notificationCorrespondenceV2Enabled;
 
     @Autowired
     public SaveCorrespondenceAsyncService(CcdNotificationsPdfService ccdNotificationsPdfService) {
@@ -58,7 +61,16 @@ public class SaveCorrespondenceAsyncService {
     public void saveEmailOrSms(final Correspondence correspondence, final SscsCaseData sscsCaseData) {
         int retry = (RetrySynchronizationManager.getContext() != null) ? RetrySynchronizationManager.getContext().getRetryCount() + 1 : 1;
         log.info("Retry number {} : to upload correspondence for {}", retry, correspondence.getValue().getCorrespondenceType().name());
-        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+
+        if (notificationCorrespondenceV2Enabled) {
+            log.info("Using notification correspondence V2 to upload correspondence for {} ", correspondence.getValue().getCorrespondenceType().name());
+            ccdNotificationsPdfService.mergeCorrespondenceIntoCcdV2(Long.valueOf(sscsCaseData.getCcdCaseId()), correspondence);
+        }
+        else {
+            log.info("Using notification correspondence V1 as V2 feature toggled off to upload correspondence for {} ", correspondence.getValue().getCorrespondenceType().name());
+            ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+        }
+
     }
 
     @Recover

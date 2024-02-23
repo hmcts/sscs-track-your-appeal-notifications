@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceType;
@@ -83,6 +84,18 @@ public class SaveCorrespondenceAsyncServiceTest {
         service.saveEmailOrSms(correspondence, sscsCaseData);
 
         verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(sscsCaseData), eq(correspondence));
+    }
+
+    @Test
+    public void shouldUseCorrespondenceV2WhenFeatureEnabledAndSaveEmailOrSmsDirectlyIntoCcd() {
+        ReflectionTestUtils.setField(service, "notificationCorrespondenceV2Enabled", true);
+
+        SscsCaseData sscsCaseData = SscsCaseData.builder().build();
+        sscsCaseData.setCcdCaseId(CCD_ID);
+        correspondence = Correspondence.builder().value(CorrespondenceDetails.builder().correspondenceType(CorrespondenceType.Email).to("Mr Blobby").build()).build();
+        service.saveEmailOrSms(correspondence, sscsCaseData);
+
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcdV2(eq(Long.valueOf(CCD_ID)), eq(correspondence));
     }
 
 }
