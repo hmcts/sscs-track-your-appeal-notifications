@@ -65,12 +65,10 @@ public class SaveCorrespondenceAsyncService {
         if (notificationCorrespondenceV2Enabled) {
             log.info("Using notification correspondence V2 to upload correspondence for {} ", correspondence.getValue().getCorrespondenceType().name());
             ccdNotificationsPdfService.mergeCorrespondenceIntoCcdV2(Long.valueOf(sscsCaseData.getCcdCaseId()), correspondence);
-        }
-        else {
+        } else {
             log.info("Using existing notification correspondence as V2 is feature toggled off to upload correspondence for {} ", correspondence.getValue().getCorrespondenceType().name());
             ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
         }
-
     }
 
     @Recover
