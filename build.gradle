@@ -329,7 +329,7 @@ dependencies {
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.22.3'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.9'
-    implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.9'
+    implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '8.12.2'
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
