@@ -104,4 +104,16 @@ public class SaveCorrespondenceAsyncServiceTest {
         verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(sscsCaseData), eq(correspondence));
     }
 
+    @Test
+    public void shouldUseCorrespondenceV2WhenFeatureEnabledAndSaveEmailOrSmsDirectlyIntoCcd() {
+        ReflectionTestUtils.setField(service, "notificationCorrespondenceV2Enabled", true);
+
+        SscsCaseData sscsCaseData = SscsCaseData.builder().build();
+        sscsCaseData.setCcdCaseId(CCD_ID);
+        correspondence = Correspondence.builder().value(CorrespondenceDetails.builder().correspondenceType(CorrespondenceType.Email).to("Mr Blobby").build()).build();
+        service.saveEmailOrSms(correspondence, sscsCaseData);
+
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcdV2(eq(Long.valueOf(CCD_ID)), eq(correspondence));
+    }
+
 }
