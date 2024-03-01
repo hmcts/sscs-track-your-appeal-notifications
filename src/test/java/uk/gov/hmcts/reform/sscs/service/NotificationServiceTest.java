@@ -40,6 +40,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT_TO_VALID_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
@@ -187,6 +188,7 @@ public class NotificationServiceTest {
                                 .appellant(APPELLANT_WITH_ADDRESS)
                                 .build()
                 )
+                .dwpState(DwpState.RESPONSE_SUBMITTED_DWP)
                 .subscriptions(Subscriptions.builder().appellantSubscription(subscription).build())
                 .caseReference(CASE_REFERENCE)
                 .createdInGapsFrom(READY_TO_LIST.getId())
@@ -887,7 +889,7 @@ public class NotificationServiceTest {
             NotificationEventType notificationEventType, Subscription appellantSubscription,
             Subscription repsSubscription, Subscription appointeeSubscription, List<CcdValue<OtherParty>> otherParties) {
         return buildNotificationWrapperGivenNotificationTypeAndSubscriptions(notificationEventType,
-                appellantSubscription, repsSubscription, appointeeSubscription, null, otherParties);
+                appellantSubscription, repsSubscription, appointeeSubscription, new SscsCaseData(), otherParties);
     }
 
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
@@ -955,7 +957,7 @@ public class NotificationServiceTest {
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(
             NotificationEventType notificationEventType, Subscription appointeeSubscription,
             Subscription repsSubscription) {
-        return buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(notificationEventType, appointeeSubscription, repsSubscription, null);
+        return buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(notificationEventType, appointeeSubscription, repsSubscription, new SscsCaseData());
     }
 
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(
@@ -1355,6 +1357,22 @@ public class NotificationServiceTest {
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(SMS), any(NotificationHandler.SendNotification.class));
 
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
+    }
+
+    @Test
+    public void willNotSendHearingNotifications_whenHearingBookedAndDwpStateIsFinalDecisionIssued() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
+        ccdNotificationWrapper.getNewSscsCaseData().setDwpState(DwpState.FINAL_DECISION_ISSUED);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
+
+        final NotificationService notificationService = new NotificationService(factory, reminderService,
+                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
+        );
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        then(notificationHandler).shouldHaveNoMoreInteractions();
     }
 
     @Test
@@ -2109,6 +2127,7 @@ public class NotificationServiceTest {
                         )
                         .build())
                 .caseReference(CASE_REFERENCE)
+                .dwpState(DwpState.RESPONSE_SUBMITTED_DWP)
                 .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
                         .documentFilename("test.pdf")
                         .documentBinaryUrl("test/binary").build()).build())
@@ -2133,6 +2152,7 @@ public class NotificationServiceTest {
                                 .appellant(appellant)
                                 .rep(rep)
                                 .build())
+                .dwpState(DwpState.RESPONSE_SUBMITTED_DWP)
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
                                 .tya(APPEAL_NUMBER)

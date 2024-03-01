@@ -45,7 +45,7 @@ public class NotificationServiceForAdminAppealWithdrawalTest extends Notificatio
         SscsCaseData newSscsCaseData = getSscsCaseData(null);
         newSscsCaseData.setSubscriptions(null);
         newSscsCaseData.getAppeal().setRep(null);
-        return getSscsCaseDataWrapper(newSscsCaseData, null, ADMIN_APPEAL_WITHDRAWN);
+        return getSscsCaseDataWrapper(newSscsCaseData, new SscsCaseData(), ADMIN_APPEAL_WITHDRAWN);
     }
 
 }
