@@ -299,6 +299,7 @@ public final class NotificationEventTypeLists {
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
+        REQUEST_FOR_INFORMATION,
         REVIEW_AND_SET_ASIDE,
         SET_ASIDE_REQUEST,
         SET_ASIDE_GRANTED,
