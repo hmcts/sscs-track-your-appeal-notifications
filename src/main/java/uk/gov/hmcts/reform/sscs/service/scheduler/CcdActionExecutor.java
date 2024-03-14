@@ -6,8 +6,8 @@ import static org.apache.commons.lang3.RegExUtils.replaceAll;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -16,20 +16,22 @@ import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 import uk.gov.hmcts.reform.sscs.service.RetryNotificationService;
 
+
 public class CcdActionExecutor extends BaseActionExecutor<String> {
 
     public CcdActionExecutor(NotificationService notificationService,
                              RetryNotificationService retryNotificationService,
                              CcdService ccdService,
+                             UpdateCcdCaseService updateCcdCaseService,
                              IdamService idamService,
                              SscsCaseCallbackDeserializer deserializer) {
-        super(notificationService, retryNotificationService, ccdService, idamService, deserializer);
+        super(notificationService, retryNotificationService, ccdService, updateCcdCaseService, idamService, deserializer);
     }
 
     @Override
     protected void updateCase(Long caseId, SscsCaseDataWrapper wrapper, IdamTokens idamTokens) {
-        SscsCaseData sscsCaseData = ccdService.getByCaseId(caseId, idamTokens).getData();
-        ccdService.updateCase(sscsCaseData, caseId, wrapper.getNotificationEventType().getId(), "CCD Case", "Notification Service updated case", idamTokens);
+        updateCcdCaseService.updateCaseV2(caseId, wrapper.getNotificationEventType().getId(), "CCD Case", "Notification Service updated case", idamTokens, sscsCaseData -> {
+        });
     }
 
     @Override
@@ -39,7 +41,7 @@ public class CcdActionExecutor extends BaseActionExecutor<String> {
 
     @Override
     protected long getCaseId(String payload) {
-        return parseLong(replaceAll(payload,",.*", EMPTY));
+        return parseLong(replaceAll(payload, ",.*", EMPTY));
     }
 
     @Override

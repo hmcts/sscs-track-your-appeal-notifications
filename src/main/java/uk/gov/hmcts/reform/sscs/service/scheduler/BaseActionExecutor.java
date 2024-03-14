@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -28,14 +29,16 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
     protected static final Logger LOG = getLogger(BaseActionExecutor.class);
     protected final NotificationService notificationService;
     protected final CcdService ccdService;
+    protected final UpdateCcdCaseService updateCcdCaseService;
     protected final IdamService idamService;
     private final SscsCaseCallbackDeserializer deserializer;
     private final RetryNotificationService retryNotificationService;
 
-    BaseActionExecutor(NotificationService notificationService, RetryNotificationService retryNotificationService, CcdService ccdService, IdamService idamService, SscsCaseCallbackDeserializer deserializer) {
+    BaseActionExecutor(NotificationService notificationService, RetryNotificationService retryNotificationService, CcdService ccdService, UpdateCcdCaseService updateCcdCaseService, IdamService idamService, SscsCaseCallbackDeserializer deserializer) {
         this.notificationService = notificationService;
         this.retryNotificationService = retryNotificationService;
         this.ccdService = ccdService;
+        this.updateCcdCaseService = updateCcdCaseService;
         this.idamService = idamService;
         this.deserializer = deserializer;
     }
