@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDateTime;
+import java.util.function.Consumer;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
@@ -23,6 +24,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -46,6 +48,9 @@ public class CcdActionExecutorTest {
 
     @Mock
     private CcdService ccdService;
+
+    @Mock
+    private UpdateCcdCaseService updateCcdCaseService;
 
     @Mock
     private RetryNotificationService retryNotificationService;
@@ -72,7 +77,7 @@ public class CcdActionExecutorTest {
 
         final SscsCaseCallbackDeserializer deserializer = new SscsCaseCallbackDeserializer(mapper);
 
-        ccdActionExecutor = new CcdActionExecutor(notificationService, retryNotificationService, ccdService, idamService, deserializer);
+        ccdActionExecutor = new CcdActionExecutor(notificationService, retryNotificationService, ccdService, updateCcdCaseService, idamService, deserializer);
 
         caseDetails = SscsCaseDetails.builder().id(456L).caseTypeId("123").state("appealCreated").build();
 
@@ -90,7 +95,7 @@ public class CcdActionExecutorTest {
         ccdActionExecutor.execute(JOB_ID, JOB_GROUP, EVIDENCE_REMINDER.getId(), "123456");
 
         verify(notificationService).manageNotificationAndSubscription(any(), eq(true));
-        verify(ccdService).updateCase(any(), any(), any(), any(), any(), any());
+        verify(updateCcdCaseService).updateCaseV2(eq(Long.valueOf(123456)), eq("evidenceReminder"), eq("CCD Case"), eq("Notification Service updated case"), any(), any(Consumer.class));
     }
 
     @Test
