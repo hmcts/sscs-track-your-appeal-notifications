@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceType;
@@ -53,7 +52,7 @@ public class SaveCorrespondenceAsyncServiceTest {
         service.saveLetter(notificationClient, NOTIFICATION_ID, correspondence, CCD_ID);
 
         verify(notificationClient).getPdfForLetter(eq(NOTIFICATION_ID));
-        verify(ccdNotificationsPdfService).mergeLetterCorrespondenceIntoCcd(any(), eq(Long.valueOf(CCD_ID)), eq(correspondence));
+        verify(ccdNotificationsPdfService).mergeLetterCorrespondenceIntoCcdV2(any(), eq(Long.valueOf(CCD_ID)), eq(correspondence));
     }
 
     @Test(expected = NotificationClientException.class)
@@ -74,46 +73,16 @@ public class SaveCorrespondenceAsyncServiceTest {
     public void willUploadPdfFormatLettersDirectlyIntoCcd(SubscriptionType subscriptionType, LetterType letterType) {
         service.saveLetter(new byte[]{}, correspondence, CCD_ID, subscriptionType);
 
-        verify(ccdNotificationsPdfService).mergeReasonableAdjustmentsCorrespondenceIntoCcd(any(byte[].class), eq(Long.valueOf(CCD_ID)), eq(correspondence), eq(letterType));
-    }
-
-    @Test
-    public void willGetLetterFromNotifyAndUploadIntoCcdWhenLetterCorrespondenceV2FeatureEnabled() throws NotificationClientException {
-        ReflectionTestUtils.setField(service, "notificationLetterCorrespondenceV2Enabled", true);
-        service.saveLetter(notificationClient, NOTIFICATION_ID, correspondence, CCD_ID);
-
-        verify(notificationClient).getPdfForLetter(eq(NOTIFICATION_ID));
-        verify(ccdNotificationsPdfService).mergeLetterCorrespondenceIntoCcdV2(any(), eq(Long.valueOf(CCD_ID)), eq(correspondence));
-    }
-
-    @Test
-    @Parameters({"APPELLANT, APPELLANT", "REPRESENTATIVE, REPRESENTATIVE", "APPOINTEE, APPOINTEE", "JOINT_PARTY, JOINT_PARTY", "OTHER_PARTY, OTHER_PARTY"})
-    public void willUploadPdfFormatLettersDirectlyIntoCcdWhenLetterCorrespondenceV2FeatureEnabled(SubscriptionType subscriptionType, LetterType letterType) {
-        ReflectionTestUtils.setField(service, "notificationLetterCorrespondenceV2Enabled", true);
-        service.saveLetter(new byte[]{}, correspondence, CCD_ID, subscriptionType);
-
         verify(ccdNotificationsPdfService).mergeReasonableAdjustmentsCorrespondenceIntoCcdV2(any(byte[].class), eq(Long.valueOf(CCD_ID)), eq(correspondence), eq(letterType));
     }
-    
+
     @Test
     public void willSaveEmailOrSmsDirectlyIntoCcd() {
-        SscsCaseData sscsCaseData = SscsCaseData.builder().build();
+        SscsCaseData sscsCaseData = SscsCaseData.builder().ccdCaseId(CCD_ID).build();
         correspondence = Correspondence.builder().value(CorrespondenceDetails.builder().correspondenceType(CorrespondenceType.Email).to("Mr Blobby").build()).build();
         service.saveEmailOrSms(correspondence, sscsCaseData);
 
-        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(sscsCaseData), eq(correspondence));
-    }
-
-    @Test
-    public void shouldUseCorrespondenceV2WhenFeatureEnabledAndSaveEmailOrSmsDirectlyIntoCcd() {
-        ReflectionTestUtils.setField(service, "notificationCorrespondenceV2Enabled", true);
-
-        SscsCaseData sscsCaseData = SscsCaseData.builder().build();
-        sscsCaseData.setCcdCaseId(CCD_ID);
-        correspondence = Correspondence.builder().value(CorrespondenceDetails.builder().correspondenceType(CorrespondenceType.Email).to("Mr Blobby").build()).build();
-        service.saveEmailOrSms(correspondence, sscsCaseData);
-
-        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcdV2(eq(Long.valueOf(CCD_ID)), eq(correspondence));
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcdV2(any(Long.class), eq(correspondence));
     }
 
 }
