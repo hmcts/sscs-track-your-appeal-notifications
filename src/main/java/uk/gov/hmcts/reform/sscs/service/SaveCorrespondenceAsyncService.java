@@ -20,18 +20,18 @@ import uk.gov.service.notify.NotificationClientException;
 public class SaveCorrespondenceAsyncService {
     private final CcdNotificationsPdfService ccdNotificationsPdfService;
 
-
     @Autowired
     public SaveCorrespondenceAsyncService(CcdNotificationsPdfService ccdNotificationsPdfService) {
         this.ccdNotificationsPdfService = ccdNotificationsPdfService;
     }
 
     @Async
-    @Retryable(maxAttemptsExpression =  "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
+    @Retryable(maxAttemptsExpression = "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
     public void saveLetter(NotificationClient client, String notificationId, Correspondence correspondence, String ccdCaseId) throws NotificationClientException {
         try {
             final byte[] pdfForLetter = client.getPdfForLetter(notificationId);
-            ccdNotificationsPdfService.mergeLetterCorrespondenceIntoCcd(pdfForLetter, Long.valueOf(ccdCaseId), correspondence);
+            log.info("Using merge letter correspondence V2 to upload letter correspondence for {} ", ccdCaseId);
+            ccdNotificationsPdfService.mergeLetterCorrespondenceIntoCcdV2(pdfForLetter, Long.valueOf(ccdCaseId), correspondence);
         } catch (NotificationClientException e) {
             if (e.getMessage().contains("PDFNotReadyError")) {
                 log.info("Got a PDFNotReadyError back from gov.notify for case id: {}.", ccdCaseId);
@@ -43,22 +43,25 @@ public class SaveCorrespondenceAsyncService {
     }
 
     @Async
-    @Retryable(maxAttemptsExpression =  "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
+    @Retryable(maxAttemptsExpression = "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
     public void saveLetter(Correspondence correspondence, final byte[] pdfForLetter, String ccdCaseId) {
         ccdNotificationsPdfService.mergeLetterCorrespondenceIntoCcd(pdfForLetter, Long.valueOf(ccdCaseId), correspondence);
     }
 
     @Async
-    @Retryable(maxAttemptsExpression =  "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
+    @Retryable(maxAttemptsExpression = "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
     public void saveLetter(final byte[] pdfForLetter, Correspondence correspondence, String ccdCaseId, SubscriptionType subscriptionType) {
-        ccdNotificationsPdfService.mergeReasonableAdjustmentsCorrespondenceIntoCcd(pdfForLetter, Long.valueOf(ccdCaseId), correspondence, LetterType.findLetterTypeFromSubscription(subscriptionType.name()));
+        log.info("Using notification letter correspondence V2 to upload reasonable adjustments correspondence for {} ", ccdCaseId);
+        ccdNotificationsPdfService.mergeReasonableAdjustmentsCorrespondenceIntoCcdV2(pdfForLetter, Long.valueOf(ccdCaseId), correspondence, LetterType.findLetterTypeFromSubscription(subscriptionType.name()));
     }
 
     @Retryable
     public void saveEmailOrSms(final Correspondence correspondence, final SscsCaseData sscsCaseData) {
         int retry = (RetrySynchronizationManager.getContext() != null) ? RetrySynchronizationManager.getContext().getRetryCount() + 1 : 1;
-        log.info("Retry number {} : to upload correspondence for {}", retry, correspondence.getValue().getCorrespondenceType().name());
-        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+        log.info("Retry number {} : to upload correspondence for {}, case reference {}",
+                retry, correspondence.getValue().getCorrespondenceType().name(), sscsCaseData.getCcdCaseId());
+
+        ccdNotificationsPdfService.mergeCorrespondenceIntoCcdV2(Long.valueOf(sscsCaseData.getCcdCaseId()), correspondence);
     }
 
     @Recover
