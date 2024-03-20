@@ -7,7 +7,7 @@ The [Job-Scheduler](https://github.com/hmcts/job-scheduler) is used to start not
 
 ### Prerequisites
 
-- JDK 8
+- JDK 17
 
 ## Building and deploying the application
   
