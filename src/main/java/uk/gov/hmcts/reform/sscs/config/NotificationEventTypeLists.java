@@ -100,6 +100,7 @@ public final class NotificationEventTypeLists {
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
         REVIEW_AND_SET_ASIDE,
+        REQUEST_FOR_INFORMATION,
         STRUCK_OUT,
         LIBERTY_TO_APPLY_REFUSED,
         SET_ASIDE_REFUSED,
