@@ -33,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
@@ -99,9 +100,9 @@ public class TrackYourAppealNotificationsApplication {
 
     @Bean
     public ServletListenerRegistrationBean<ServletContextListener> appInsightsServletContextListenerRegistrationBean(
-                                ApplicationInsightsServletContextListener applicationInsightsServletContextListener) {
+            ApplicationInsightsServletContextListener applicationInsightsServletContextListener) {
         ServletListenerRegistrationBean<ServletContextListener> srb =
-            new ServletListenerRegistrationBean<>();
+                new ServletListenerRegistrationBean<>();
         srb.setListener(applicationInsightsServletContextListener);
         return srb;
     }
@@ -118,9 +119,9 @@ public class TrackYourAppealNotificationsApplication {
         javaMailSender.setHost(emailHost);
         javaMailSender.setPort(emailPort);
         Properties properties = new Properties();
-        properties.setProperty("mail.transport.protocol","smtp");
+        properties.setProperty("mail.transport.protocol", "smtp");
         properties.setProperty("mail.smtp.starttls.enable", smtpTlsEnabled);
-        properties.put("mail.smtp.ssl.trust","*");
+        properties.put("mail.smtp.ssl.trust", "*");
         javaMailSender.setJavaMailProperties(properties);
         return javaMailSender;
     }
@@ -164,10 +165,11 @@ public class TrackYourAppealNotificationsApplication {
                                   NotificationService notificationService,
                                   RetryNotificationService retryNotificationService,
                                   CcdService ccdService,
+                                  UpdateCcdCaseService updateCcdCaseService,
                                   IdamService idamService,
                                   SscsCaseCallbackDeserializer deserializer) {
         // Had to wire these up like this Spring will not wire up CcdActionExecutor otherwise.
-        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, retryNotificationService, ccdService, idamService, deserializer);
+        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, retryNotificationService, ccdService, updateCcdCaseService, idamService, deserializer);
         return new JobMapper(asList(
                 new JobMapping<>(payload -> !payload.contains("onlineHearingId"), ccdActionDeserializer, ccdActionExecutor)
         ));
