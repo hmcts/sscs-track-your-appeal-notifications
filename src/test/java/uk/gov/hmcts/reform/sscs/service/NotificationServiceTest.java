@@ -32,6 +32,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED;
@@ -1934,6 +1935,17 @@ public class NotificationServiceTest {
     public void hasJustSubscribedSms_returnsTrue() {
         Subscription oldSubscription = subscription.toBuilder().subscribeSms(NO).wantSmsNotifications(NO).build();
         assertTrue(NotificationService.hasCaseJustSubscribed(subscription, oldSubscription));
+    }
+
+    @Test
+    public void givenActionPostponementRequestWithRefuseOnTheDay_willNotSendNotifications() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(ACTION_POSTPONEMENT_REQUEST, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+
+        ccdNotificationWrapper.getNewSscsCaseData().getPostponementRequest().setActionPostponementRequestSelected("refuseOnTheDay");
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        verifyNoInteractions(notificationValidService);
+        verifyNoInteractions(notificationHandler);
     }
 
     private NotificationService getNotificationService() {
