@@ -145,6 +145,7 @@ public class NotificationsIt extends NotificationsItBase {
             "representativeSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
             "representativeSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "hearingRouteReplace", "case_details", "case_data", "hearingRoute");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
         json = json.replace(HEARING_ROUTE_FIELD, hearingRoute);
         json = updateCommonJsonData(notificationEventType, json);
