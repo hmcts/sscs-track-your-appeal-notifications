@@ -418,7 +418,14 @@ public class NotificationService {
     private boolean isHearingBookedInformationTheSame(HearingDetails newHearing, HearingDetails oldHearing) {
         return newHearing.getHearingDateTime().equals(oldHearing.getHearingDateTime())
                 && newHearing.getEpimsId().equals(oldHearing.getEpimsId())
-                && newHearing.getHearingChannel().equals(oldHearing.getHearingChannel());
+                && hasHearingChannelNotChanged(newHearing, oldHearing);
+    }
+
+    private boolean hasHearingChannelNotChanged(HearingDetails newHearing, HearingDetails oldHearing) {
+        var oldHearingChannel = Optional.ofNullable(oldHearing.getHearingChannel());
+        var newHearingChannel = Optional.ofNullable(newHearing.getHearingChannel());
+
+        return oldHearingChannel.equals(newHearingChannel);
     }
 
     private boolean isDigitalCase(final NotificationWrapper notificationWrapper) {
