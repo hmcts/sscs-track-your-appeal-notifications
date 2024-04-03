@@ -934,6 +934,9 @@ public class NotificationServiceTest {
                 .otherParties(otherParties)
                 .hearings(singletonList(Hearing.builder().build()))
                 .createdInGapsFrom(READY_TO_LIST.getId())
+                .schedulingAndListingFields(SchedulingAndListingFields.builder()
+                        .hearingRoute(HearingRoute.LIST_ASSIST)
+                        .build())
                 .build();
 
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
@@ -2015,6 +2018,41 @@ public class NotificationServiceTest {
     public void hasJustSubscribedSms_returnsTrue() {
         Subscription oldSubscription = subscription.toBuilder().subscribeSms(NO).wantSmsNotifications(NO).build();
         assertTrue(NotificationService.hasCaseJustSubscribed(subscription, oldSubscription));
+    }
+
+    @Test
+    public void willNotSendHearingNotifications_whenGapsAndActionPostponementRequest() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(POSTPONEMENT, APPELLANT_WITH_ADDRESS, null, null);
+        ccdNotificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().setHearingRoute(HearingRoute.GAPS);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
+
+        final NotificationService notificationService = new NotificationService(factory, reminderService,
+                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
+        );
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        then(notificationHandler).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void willSendHearingNotifications_whenCaseIsListAssistAndActionPostponementRequest() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(POSTPONEMENT, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        ccdNotificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().setHearingRoute(HearingRoute.LIST_ASSIST);
+        ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
+        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom("validAppeal");
+
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        Notification notification = new Notification(Template.builder().emailTemplateId("emailTemplateId").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), new HashMap<>(), new Reference(), null);
+        when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        then(notificationHandler).should(atLeastOnce()).sendNotification(
+                eq(ccdNotificationWrapper), eq("emailTemplateId"), eq("Email"),
+                any(NotificationHandler.SendNotification.class));
     }
 
     private NotificationService getNotificationService() {
