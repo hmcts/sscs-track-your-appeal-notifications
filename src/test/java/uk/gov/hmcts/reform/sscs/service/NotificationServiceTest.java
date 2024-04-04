@@ -1550,7 +1550,6 @@ public class NotificationServiceTest {
                 any(NotificationHandler.SendNotification.class));
     }
 
-    @Ignore
     @Test
     public void willNotSendHearingNotifications_whenHearingBookedAndHearingDateIsDifferent() {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
@@ -1560,7 +1559,6 @@ public class NotificationServiceTest {
         sendWrapperAndVerifyNoMoreInteractions(ccdNotificationWrapper);
     }
 
-    @Ignore
     @Test
     public void willNotSendHearingNotifications_whenHearingBookedAndHearingLocationIsDifferent() {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
@@ -1570,7 +1568,6 @@ public class NotificationServiceTest {
         sendWrapperAndVerifyNoMoreInteractions(ccdNotificationWrapper);
     }
 
-    @Ignore
     @Test
     public void willNotSendHearingNotifications_whenHearingBookedAndHearingChannelIsDifferent() {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
