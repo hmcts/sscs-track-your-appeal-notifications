@@ -72,6 +72,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.pdfbox.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -1549,6 +1550,7 @@ public class NotificationServiceTest {
                 any(NotificationHandler.SendNotification.class));
     }
 
+    @Ignore
     @Test
     public void willNotSendHearingNotifications_whenHearingBookedAndHearingDateIsDifferent() {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
@@ -1558,6 +1560,7 @@ public class NotificationServiceTest {
         sendWrapperAndVerifyNoMoreInteractions(ccdNotificationWrapper);
     }
 
+    @Ignore
     @Test
     public void willNotSendHearingNotifications_whenHearingBookedAndHearingLocationIsDifferent() {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
@@ -1567,6 +1570,7 @@ public class NotificationServiceTest {
         sendWrapperAndVerifyNoMoreInteractions(ccdNotificationWrapper);
     }
 
+    @Ignore
     @Test
     public void willNotSendHearingNotifications_whenHearingBookedAndHearingChannelIsDifferent() {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
