@@ -215,7 +215,7 @@
           }
         }
       }],
-      "hearingRoute" : "hearingRouteReplace"
+      "hearingRoute" : "listAssist"
     },
     "case_type_id": "Benefit",
     "state": "appealCreated",

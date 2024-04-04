@@ -6,6 +6,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.LIST_ASSIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_ACTION_FURTHER_EVIDENCE;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_FOR_DORMANT_CASES;
@@ -222,7 +223,7 @@ public class NotificationService {
         return nonNull(partyId)
                 && emptyIfNull(sscsCaseData.getReissueArtifactUi().getOtherPartyOptions()).stream()
                         .map(OtherPartyOption::getValue)
-                        .filter(otherPartyOptionDetails -> String.valueOf(partyId).equals(otherPartyOptionDetails.getOtherPartyOptionId()))
+                        .filter(otherPartyOptionDetails -> partyId.equals(otherPartyOptionDetails.getOtherPartyOptionId()))
                         .anyMatch(otherPartyOptionDetails -> YesNo.isYes(otherPartyOptionDetails.getResendToOtherParty()));
     }
 
@@ -374,6 +375,13 @@ public class NotificationService {
             return false;
         }
 
+        if (POSTPONEMENT.equals(notificationType)
+                && !LIST_ASSIST.equals(notificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().getHearingRoute())) {
+            log.info("Cannot complete notification {} as the case is not set to list assist for case {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
+            return false;
+        }
+
         if (!isDigitalCase(notificationWrapper)
             && DWP_UPLOAD_RESPONSE.equals(notificationType)) {
             log.info("Cannot complete notification {} as the appeal was dwpUploadResponse for caseId {}.",
@@ -397,6 +405,7 @@ public class NotificationService {
                 notificationWrapper.getSscsCaseDataWrapper().getState());
             return false;
         }
+
         log.info("Notification valid to send for case id {} and event {} in state {}",
             notificationWrapper.getCaseId(),
             notificationType.getId(),
