@@ -399,23 +399,6 @@ public class NotificationService {
             return false;
         }
 
-        if (HEARING_BOOKED.equals(notificationType)) {
-            Hearing newHearing = notificationWrapper.getNewSscsCaseData().getLatestHearing();
-            Hearing oldHearing = notificationWrapper.getOldSscsCaseData().getLatestHearing();
-
-            if (nonNull(newHearing) && nonNull(oldHearing)) {
-                HearingDetails newHearingDetails = newHearing.getValue();
-                HearingDetails oldHearingDetails = oldHearing.getValue();
-
-                if (nonNull(oldHearingDetails) && nonNull(oldHearingDetails.getHearingId())
-                        && nonNull(newHearingDetails) && nonNull(newHearingDetails.getHearingId())
-                        && newHearingDetails.getHearingId().equals(oldHearingDetails.getHearingId())
-                        && !isHearingBookedInformationTheSame(newHearingDetails, oldHearingDetails)) {
-                    return false;
-                }
-            }
-        }
-
         log.info("Notification valid to send for case id {} and event {} in state {}",
             notificationWrapper.getCaseId(),
             notificationType.getId(),
