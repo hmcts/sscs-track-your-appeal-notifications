@@ -406,12 +406,6 @@ public class NotificationService {
         return true;
     }
 
-    private boolean isHearingBookedInformationTheSame(HearingDetails newHearing, HearingDetails oldHearing) {
-        return newHearing.getHearingDateTime().equals(oldHearing.getHearingDateTime())
-                && newHearing.getEpimsId().equals(oldHearing.getEpimsId())
-                && newHearing.getHearingChannel().equals(oldHearing.getHearingChannel());
-    }
-
     private boolean isDigitalCase(final NotificationWrapper notificationWrapper) {
         return READY_TO_LIST
             .equals(notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getCreatedInGapsFrom());
