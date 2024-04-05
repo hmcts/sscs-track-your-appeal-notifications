@@ -352,6 +352,13 @@ public class NotificationService {
             return false;
         }
 
+        if (HEARING_BOOKED.equals(notificationType)
+                && DwpState.FINAL_DECISION_ISSUED.equals(notificationWrapper.getNewSscsCaseData().getDwpState())) {
+            log.info("Cannot complete notification {} as the notification has been fired in error for caseId {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
+            return false;
+        }
+
         if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh()
             && (EVENT_TYPES_NOT_FOR_WELSH_CASES.contains(notificationType))) {
             log.info("Cannot complete notification {} as the appeal is Welsh for caseId {}.",
