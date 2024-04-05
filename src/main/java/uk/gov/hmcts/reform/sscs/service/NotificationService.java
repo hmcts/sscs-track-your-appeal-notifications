@@ -407,10 +407,9 @@ public class NotificationService {
                 HearingDetails newHearingDetails = newHearing.getValue();
                 HearingDetails oldHearingDetails = oldHearing.getValue();
 
-                if (nonNull(oldHearingDetails) && nonNull(oldHearingDetails.getHearingId())
-                        && nonNull(newHearingDetails) && nonNull(newHearingDetails.getHearingId())
+                if (hasNonNullHearingDetails(oldHearingDetails, newHearingDetails)
                         && newHearingDetails.getHearingId().equals(oldHearingDetails.getHearingId())
-                        && !isHearingBookedInformationTheSame(newHearingDetails, oldHearingDetails)) {
+                        && isHearingBookedInformationTheSame(newHearingDetails, oldHearingDetails)) {
                     return false;
                 }
             }
@@ -421,6 +420,11 @@ public class NotificationService {
             notificationType.getId(),
             notificationWrapper.getSscsCaseDataWrapper().getState());
         return true;
+    }
+
+    private static boolean hasNonNullHearingDetails(HearingDetails oldHearingDetails, HearingDetails newHearingDetails) {
+        return nonNull(oldHearingDetails) && nonNull(oldHearingDetails.getHearingId())
+                && nonNull(newHearingDetails) && nonNull(newHearingDetails.getHearingId());
     }
 
     private boolean isHearingBookedInformationTheSame(HearingDetails newHearing, HearingDetails oldHearing) {
