@@ -1,5 +1,5 @@
 java:
-  image: 'https://hmctspublic.azurecr.io/sscs/tya-notif:latest'
+  image: 'https://hmctspublic.azurecr.io/sscs/tya-notif:pr-3732'
   applicationPort: 8081
   readinessPath: '/health/readiness'
   aadIdentityName: sscs
