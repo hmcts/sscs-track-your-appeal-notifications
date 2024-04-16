@@ -145,10 +145,19 @@ public class NotificationService {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
                     && isValidNotification(notificationWrapper, subscriptionWithType)) {
                 sendNotification(notificationWrapper, subscriptionWithType);
+                resendLastNotification(notificationWrapper, subscriptionWithType);
             } else {
                 log.error("Is not a valid notification event {} for case id {}, not sending notification.",
                         notificationWrapper.getNotificationType().getId(), notificationWrapper.getCaseId());
             }
+        }
+    }
+
+    private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
+        if (subscriptionWithType.getSubscription() != null && shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
+            scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
+            sendNotification(notificationWrapper, subscriptionWithType);
+            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(NotificationEventType.SUBSCRIPTION_UPDATED);
         }
     }
 
@@ -219,6 +228,11 @@ public class NotificationService {
         String email = oldSubscription != null && oldSubscription.isEmailSubscribed() ? null : newSubscription.getEmail();
         String mobile = oldSubscription != null && oldSubscription.isSmsSubscribed() ? null : newSubscription.getMobile();
         subscriptionWithType.setSubscription(newSubscription.toBuilder().email(email).mobile(mobile).build());
+    }
+
+    private boolean shouldProcessLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
+        return NotificationEventType.SUBSCRIPTION_UPDATED.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())
+                && hasCaseJustSubscribed(subscriptionWithType.getSubscription(), getSubscription(notificationWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType()));
     }
 
     static Boolean hasCaseJustSubscribed(Subscription newSubscription, Subscription oldSubscription) {
