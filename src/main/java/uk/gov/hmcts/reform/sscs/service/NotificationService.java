@@ -145,19 +145,14 @@ public class NotificationService {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
                     && isValidNotification(notificationWrapper, subscriptionWithType)) {
                 sendNotification(notificationWrapper, subscriptionWithType);
-                resendLastNotification(notificationWrapper, subscriptionWithType);
+
+                if (subscriptionWithType.getSubscription() != null && shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
+                    scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
+                }
             } else {
                 log.error("Is not a valid notification event {} for case id {}, not sending notification.",
                         notificationWrapper.getNotificationType().getId(), notificationWrapper.getCaseId());
             }
-        }
-    }
-
-    private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        if (subscriptionWithType.getSubscription() != null && shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
-            scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
-            sendNotification(notificationWrapper, subscriptionWithType);
-            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(NotificationEventType.SUBSCRIPTION_UPDATED);
         }
     }
 
