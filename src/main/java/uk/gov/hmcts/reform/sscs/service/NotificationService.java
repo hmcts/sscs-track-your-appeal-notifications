@@ -145,7 +145,7 @@ public class NotificationService {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
                     && isValidNotification(notificationWrapper, subscriptionWithType)) {
                 sendNotification(notificationWrapper, subscriptionWithType);
-                log.info("testing");
+
                 if (subscriptionWithType.getSubscription() != null
                         && NotificationEventType.SUBSCRIPTION_UPDATED.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())) {
                     scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
