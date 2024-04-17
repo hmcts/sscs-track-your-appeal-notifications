@@ -146,9 +146,10 @@ public class NotificationService {
                     && isValidNotification(notificationWrapper, subscriptionWithType)) {
                 sendNotification(notificationWrapper, subscriptionWithType);
 
-                if (subscriptionWithType.getSubscription() != null && shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
+                if (subscriptionWithType.getSubscription() != null && NotificationEventType.SUBSCRIPTION_UPDATED.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())) {
                     scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
                 }
+
             } else {
                 log.error("Is not a valid notification event {} for case id {}, not sending notification.",
                         notificationWrapper.getNotificationType().getId(), notificationWrapper.getCaseId());
@@ -223,11 +224,6 @@ public class NotificationService {
         String email = oldSubscription != null && oldSubscription.isEmailSubscribed() ? null : newSubscription.getEmail();
         String mobile = oldSubscription != null && oldSubscription.isSmsSubscribed() ? null : newSubscription.getMobile();
         subscriptionWithType.setSubscription(newSubscription.toBuilder().email(email).mobile(mobile).build());
-    }
-
-    private boolean shouldProcessLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        return NotificationEventType.SUBSCRIPTION_UPDATED.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())
-                && hasCaseJustSubscribed(subscriptionWithType.getSubscription(), getSubscription(notificationWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType()));
     }
 
     static Boolean hasCaseJustSubscribed(Subscription newSubscription, Subscription oldSubscription) {
