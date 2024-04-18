@@ -77,6 +77,7 @@ import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.SendNotificationHelper;
 import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
+import uk.gov.hmcts.reform.sscs.utility.dwpResponseUtil;
 
 @Component
 @Slf4j
@@ -168,7 +169,6 @@ public class Personalisation<E extends NotificationWrapper> {
             placeholders.accept(translatedDate);
         }
     }
-
 
     public Map<String, Object> create(final E notificationWrapper, final SubscriptionWithType subscriptionWithType) {
         return create(notificationWrapper.getSscsCaseDataWrapper(), subscriptionWithType);
@@ -490,7 +490,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
     Map<String, Object> setEventData(Map<String, Object> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
         if (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList")) {
-            LocalDate localDate = LocalDate.parse(ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(MAX_DWP_RESPONSE_DAYS);
+            LocalDate localDate = LocalDate.parse(ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(dwpResponseUtil.calculateMaxDwpResponseDays(ccdResponse.getBenefitCode()));
             String dwpResponseDateString = formatLocalDate(localDate);
             personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
             translateToWelshDate(localDate, ccdResponse, value ->
@@ -506,7 +506,7 @@ public class Personalisation<E extends NotificationWrapper> {
                     || notificationEventType.equals(CASE_UPDATED)
                     || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
                     || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)) {
-                    return setAppealReceivedDetails(personalisation, event.getValue(), ccdResponse);
+                    return setSentToDWPDetails(personalisation, event.getValue(), ccdResponse);
                 }
             }
         }
@@ -540,8 +540,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
     }
 
-    private Map<String, Object> setAppealReceivedDetails(Map<String, Object> personalisation, EventDetails eventDetails, SscsCaseData ccdResponse) {
-        LocalDate localDate = eventDetails.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate();
+    private Map<String, Object> setSentToDWPDetails(Map<String, Object> personalisation, EventDetails eventDetails, SscsCaseData ccdResponse) {
+        LocalDate localDate = eventDetails.getDateTime().plusDays(dwpResponseUtil.calculateMaxDwpResponseDays(ccdResponse.getBenefitCode())).toLocalDate();
         String dwpResponseDateString = formatLocalDate(localDate);
         personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
         translateToWelshDate(localDate, ccdResponse, value ->
