@@ -506,7 +506,7 @@ public class Personalisation<E extends NotificationWrapper> {
                     || notificationEventType.equals(CASE_UPDATED)
                     || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
                     || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)) {
-                    return setSentToDWPDetails(personalisation, event.getValue(), ccdResponse);
+                    return setSentToDwpDetails(personalisation, event.getValue(), ccdResponse);
                 }
             }
         }
@@ -540,7 +540,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
     }
 
-    private Map<String, Object> setSentToDWPDetails(Map<String, Object> personalisation, EventDetails eventDetails, SscsCaseData ccdResponse) {
+    private Map<String, Object> setSentToDwpDetails(Map<String, Object> personalisation, EventDetails eventDetails, SscsCaseData ccdResponse) {
         LocalDate localDate = eventDetails.getDateTime().plusDays(dwpResponseUtil.calculateMaxDwpResponseDays(ccdResponse.getBenefitCode())).toLocalDate();
         String dwpResponseDateString = formatLocalDate(localDate);
         personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
