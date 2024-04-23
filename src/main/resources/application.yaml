@@ -1666,7 +1666,7 @@ job.scheduler:
           triggerCompleteMessage: Trigger [{1}.{0}] completed firing job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
           triggerMisfiredMessage: Trigger [{1}.{0}] misfired job [{6}.{5}]. Should have fired at {3, date, dd-MM-yyyy HH:mm:ss.SSS}
         jobHistory:
-          class: org.quartz.plugins.history.LoggingJ obHistoryPlugin
+          class: org.quartz.plugins.history.LoggingJobHistoryPlugin
           jobToBeFiredMessage: Job [{1}.{0}] to be fired by trigger [{4}.{3}], re-fire {7}
           jobSuccessMessage: Job [{1}.{0}] execution complete and reports {8}
           jobFailedMessage: Job [{1}.{0}] execution failed with exception {8}
