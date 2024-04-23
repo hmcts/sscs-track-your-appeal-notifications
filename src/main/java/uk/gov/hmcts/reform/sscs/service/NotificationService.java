@@ -6,6 +6,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.LIST_ASSIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_ACTION_FURTHER_EVIDENCE;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_FOR_DORMANT_CASES;
@@ -222,7 +223,7 @@ public class NotificationService {
         return nonNull(partyId)
                 && emptyIfNull(sscsCaseData.getReissueArtifactUi().getOtherPartyOptions()).stream()
                         .map(OtherPartyOption::getValue)
-                        .filter(otherPartyOptionDetails -> String.valueOf(partyId).equals(otherPartyOptionDetails.getOtherPartyOptionId()))
+                        .filter(otherPartyOptionDetails -> partyId.equals(otherPartyOptionDetails.getOtherPartyOptionId()))
                         .anyMatch(otherPartyOptionDetails -> YesNo.isYes(otherPartyOptionDetails.getResendToOtherParty()));
     }
 
@@ -351,6 +352,13 @@ public class NotificationService {
             return false;
         }
 
+        if (HEARING_BOOKED.equals(notificationType)
+                && DwpState.FINAL_DECISION_ISSUED.equals(notificationWrapper.getNewSscsCaseData().getDwpState())) {
+            log.info("Cannot complete notification {} as the notification has been fired in error for caseId {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
+            return false;
+        }
+
         if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh()
             && (EVENT_TYPES_NOT_FOR_WELSH_CASES.contains(notificationType))) {
             log.info("Cannot complete notification {} as the appeal is Welsh for caseId {}.",
@@ -364,6 +372,13 @@ public class NotificationService {
                 && !PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE.contains(processAudioVisualAction)) {
             log.info("Cannot complete notification {} since the action {} does not require a notice to be sent for caseId {}.",
                     notificationType.getId(), processAudioVisualAction, notificationWrapper.getCaseId());
+            return false;
+        }
+
+        if (POSTPONEMENT.equals(notificationType)
+                && !LIST_ASSIST.equals(notificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().getHearingRoute())) {
+            log.info("Cannot complete notification {} as the case is not set to list assist for case {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
             return false;
         }
 

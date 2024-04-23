@@ -41,6 +41,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT_TO_VALID_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
@@ -60,6 +61,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,6 +73,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.pdfbox.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -94,6 +97,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.reference.data.model.HearingChannel;
 import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 
 @RunWith(JUnitParamsRunner.class)
@@ -188,6 +192,7 @@ public class NotificationServiceTest {
                                 .appellant(APPELLANT_WITH_ADDRESS)
                                 .build()
                 )
+                .dwpState(DwpState.RESPONSE_SUBMITTED_DWP)
                 .subscriptions(Subscriptions.builder().appellantSubscription(subscription).build())
                 .caseReference(CASE_REFERENCE)
                 .createdInGapsFrom(READY_TO_LIST.getId())
@@ -888,7 +893,7 @@ public class NotificationServiceTest {
             NotificationEventType notificationEventType, Subscription appellantSubscription,
             Subscription repsSubscription, Subscription appointeeSubscription, List<CcdValue<OtherParty>> otherParties) {
         return buildNotificationWrapperGivenNotificationTypeAndSubscriptions(notificationEventType,
-                appellantSubscription, repsSubscription, appointeeSubscription, null, otherParties);
+                appellantSubscription, repsSubscription, appointeeSubscription, new SscsCaseData(), otherParties);
     }
 
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
@@ -932,6 +937,9 @@ public class NotificationServiceTest {
                 .otherParties(otherParties)
                 .hearings(singletonList(Hearing.builder().build()))
                 .createdInGapsFrom(READY_TO_LIST.getId())
+                .schedulingAndListingFields(SchedulingAndListingFields.builder()
+                        .hearingRoute(HearingRoute.LIST_ASSIST)
+                        .build())
                 .build();
 
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
@@ -956,7 +964,7 @@ public class NotificationServiceTest {
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(
             NotificationEventType notificationEventType, Subscription appointeeSubscription,
             Subscription repsSubscription) {
-        return buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(notificationEventType, appointeeSubscription, repsSubscription, null);
+        return buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(notificationEventType, appointeeSubscription, repsSubscription, new SscsCaseData());
     }
 
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(
@@ -1359,6 +1367,22 @@ public class NotificationServiceTest {
     }
 
     @Test
+    public void willNotSendHearingNotifications_whenHearingBookedAndDwpStateIsFinalDecisionIssued() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
+        ccdNotificationWrapper.getNewSscsCaseData().setDwpState(DwpState.FINAL_DECISION_ISSUED);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
+
+        final NotificationService notificationService = new NotificationService(factory, reminderService,
+                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
+        );
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        then(notificationHandler).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
     public void sendAppellantLetterOnAppealReceived() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
         String docmosisId = "docmosis-id.doc";
@@ -1522,6 +1546,87 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
 
         then(notificationHandler).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void willSendHearingNotifications_whenHearingBookedAndHearingIdIsDifferent() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        addHearings(ccdNotificationWrapper);
+        ccdNotificationWrapper.getOldSscsCaseData().getLatestHearing().getValue().setHearingId("1");
+        ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
+        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom("validAppeal");
+
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        Notification notification = new Notification(Template.builder().emailTemplateId("emailTemplateId").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), new HashMap<>(), new Reference(), null);
+        when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        then(notificationHandler).should(atLeastOnce()).sendNotification(
+                eq(ccdNotificationWrapper), eq("emailTemplateId"), eq("Email"),
+                any(NotificationHandler.SendNotification.class));
+    }
+
+    @Ignore
+    @Test
+    public void willNotSendHearingNotifications_whenHearingBookedAndHearingDateIsDifferent() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
+        addHearings(ccdNotificationWrapper);
+        ccdNotificationWrapper.getOldSscsCaseData().getLatestHearing().getValue().setHearingDate(LocalDate.now().plusDays(1).toString());
+
+        sendWrapperAndVerifyNoMoreInteractions(ccdNotificationWrapper);
+    }
+
+    @Ignore
+    @Test
+    public void willNotSendHearingNotifications_whenHearingBookedAndHearingLocationIsDifferent() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
+        addHearings(ccdNotificationWrapper);
+        ccdNotificationWrapper.getOldSscsCaseData().getLatestHearing().getValue().setEpimsId("3242342");
+
+        sendWrapperAndVerifyNoMoreInteractions(ccdNotificationWrapper);
+    }
+
+    @Ignore
+    @Test
+    public void willNotSendHearingNotifications_whenHearingBookedAndHearingChannelIsDifferent() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(HEARING_BOOKED, APPELLANT_WITH_ADDRESS, null, null);
+        addHearings(ccdNotificationWrapper);
+        ccdNotificationWrapper.getOldSscsCaseData().getLatestHearing().getValue().setHearingChannel(HearingChannel.VIDEO);
+
+        sendWrapperAndVerifyNoMoreInteractions(ccdNotificationWrapper);
+    }
+
+    private void sendWrapperAndVerifyNoMoreInteractions(CcdNotificationWrapper ccdNotificationWrapper) {
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
+
+        final NotificationService notificationService = new NotificationService(factory, reminderService,
+                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
+        );
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        then(notificationHandler).shouldHaveNoMoreInteractions();
+    }
+
+    private void addHearings(CcdNotificationWrapper ccdNotificationWrapper) {
+        String currentTime = LocalTime.now().toString();
+        ccdNotificationWrapper.getOldSscsCaseData().setHearings(List.of(Hearing.builder().value(HearingDetails.builder()
+                .hearingId("0")
+                .hearingDate(LocalDate.now().toString())
+                .time(currentTime)
+                .epimsId("324")
+                .hearingChannel(HearingChannel.PAPER)
+                .build()).build()));
+
+        ccdNotificationWrapper.getNewSscsCaseData().setHearings(List.of(Hearing.builder().value(HearingDetails.builder()
+                .hearingId("0")
+                .hearingDate(LocalDate.now().toString())
+                .time(currentTime)
+                .epimsId("324")
+                .hearingChannel(HearingChannel.PAPER)
+                .build()).build()));
     }
 
     @Test
@@ -1946,6 +2051,41 @@ public class NotificationServiceTest {
 
         verifyNoInteractions(notificationValidService);
         verifyNoInteractions(notificationHandler);
+      }
+
+    @Test
+    public void willNotSendHearingNotifications_whenGapsAndActionPostponementRequest() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(POSTPONEMENT, APPELLANT_WITH_ADDRESS, null, null);
+        ccdNotificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().setHearingRoute(HearingRoute.GAPS);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
+
+        final NotificationService notificationService = new NotificationService(factory, reminderService,
+                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
+        );
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        then(notificationHandler).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void willSendHearingNotifications_whenCaseIsListAssistAndActionPostponementRequest() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(POSTPONEMENT, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        ccdNotificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().setHearingRoute(HearingRoute.LIST_ASSIST);
+        ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
+        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom("validAppeal");
+
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        Notification notification = new Notification(Template.builder().emailTemplateId("emailTemplateId").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), new HashMap<>(), new Reference(), null);
+        when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        then(notificationHandler).should(atLeastOnce()).sendNotification(
+                eq(ccdNotificationWrapper), eq("emailTemplateId"), eq("Email"),
+                any(NotificationHandler.SendNotification.class));
     }
 
     private NotificationService getNotificationService() {
@@ -2011,7 +2151,7 @@ public class NotificationServiceTest {
     }
 
     public static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
-        return buildBaseWrapperWithCaseData(getSscsCaseDataBuilder(appellant, rep, sscsDocument).build(), eventType);
+        return buildBaseWrapperWithCaseData(getSscsCaseDataBuilder(appellant, rep, sscsDocument).build(), getSscsCaseDataBuilder(appellant, rep, sscsDocument).build(), eventType);
     }
 
     private static List<OtherPartyOption> getOtherPartyOptions(YesNo resendToOtherParty) {
@@ -2082,6 +2222,15 @@ public class NotificationServiceTest {
         return new CcdNotificationWrapper(caseDataWrapper);
     }
 
+    public static CcdNotificationWrapper buildBaseWrapperWithCaseData(SscsCaseData newSscsCaseDataWithDocuments, SscsCaseData oldSscsCaseDataWithDocuments, NotificationEventType eventType) {
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(newSscsCaseDataWithDocuments)
+                .oldSscsCaseData(oldSscsCaseDataWithDocuments)
+                .notificationEventType(eventType)
+                .build();
+        return new CcdNotificationWrapper(caseDataWrapper);
+    }
+
     public static CcdNotificationWrapper buildBaseWrapperWithReasonableAdjustment() {
         SscsCaseData caseData = SscsCaseData.builder()
                 .reasonableAdjustments(ReasonableAdjustments.builder()
@@ -2121,6 +2270,7 @@ public class NotificationServiceTest {
                         )
                         .build())
                 .caseReference(CASE_REFERENCE)
+                .dwpState(DwpState.RESPONSE_SUBMITTED_DWP)
                 .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
                         .documentFilename("test.pdf")
                         .documentBinaryUrl("test/binary").build()).build())
@@ -2145,6 +2295,7 @@ public class NotificationServiceTest {
                                 .appellant(appellant)
                                 .rep(rep)
                                 .build())
+                .dwpState(DwpState.RESPONSE_SUBMITTED_DWP)
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
                                 .tya(APPEAL_NUMBER)
@@ -2166,6 +2317,7 @@ public class NotificationServiceTest {
                         .documentFilename("test.pdf")
                         .documentBinaryUrl("test/binary").build()).build())
                 .ccdCaseId(CASE_ID)
+                .hearings(List.of(Hearing.builder().value(HearingDetails.builder().build()).build()))
                 .sscsDocument(new ArrayList<>(singletonList(sscsDocument)))
                 .informationFromAppellant(informationFromAppellant);
     }
