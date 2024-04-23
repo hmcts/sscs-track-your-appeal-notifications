@@ -2051,7 +2051,7 @@ public class NotificationServiceTest {
 
         verifyNoInteractions(notificationValidService);
         verifyNoInteractions(notificationHandler);
-      }
+    }
 
     @Test
     public void willNotSendHearingNotifications_whenGapsAndActionPostponementRequest() {
