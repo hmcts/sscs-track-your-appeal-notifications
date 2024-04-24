@@ -941,7 +941,7 @@ public class PersonalisationTest {
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
 
-        assertEquals(LocalDate.now().plusDays(dwpResponseUtil.MAX_DWP_RESPONSE_DAYS).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(APPEAL_RESPOND_DATE));
+        assertEquals(LocalDate.now().plusDays(dwpResponseUtil.calculateMaxDwpResponseDays(response.getBenefitCode())).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
