@@ -490,8 +490,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
     Map<String, Object> setEventData(Map<String, Object> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
         if (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList")) {
-            int dwpResponseDays = ofNullable(dwpResponseUtil.calculateMaxDwpResponseDays(ccdResponse.getBenefitCode())).orElse(dwpResponseUtil.MAX_DWP_RESPONSE_DAYS);
-            LocalDate localDate = LocalDate.parse(ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(dwpResponseDays);
+            LocalDate localDate = LocalDate.parse(ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(dwpResponseUtil.calculateMaxDwpResponseDays(ccdResponse.getBenefitCode()));
             String dwpResponseDateString = formatLocalDate(localDate);
             personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
             translateToWelshDate(localDate, ccdResponse, value ->
@@ -542,8 +541,7 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private Map<String, Object> setAppealReceivedDetails(Map<String, Object> personalisation, EventDetails eventDetails, SscsCaseData ccdResponse) {
-        int dwpResponseDays = ofNullable(dwpResponseUtil.calculateMaxDwpResponseDays(ccdResponse.getBenefitCode())).orElse(dwpResponseUtil.MAX_DWP_RESPONSE_DAYS);
-        LocalDate localDate = eventDetails.getDateTime().plusDays(dwpResponseDays).toLocalDate();
+        LocalDate localDate = eventDetails.getDateTime().plusDays(dwpResponseUtil.calculateMaxDwpResponseDays(ccdResponse.getBenefitCode())).toLocalDate();
         String dwpResponseDateString = formatLocalDate(localDate);
         personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
         translateToWelshDate(localDate, ccdResponse, value ->
