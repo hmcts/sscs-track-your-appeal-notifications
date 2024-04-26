@@ -30,7 +30,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.utility.dwpResponseUtil.calculateMaxDwpResponseDays;
+import static uk.gov.hmcts.reform.sscs.personalisation.Personalisation.calculateMaxDwpResponseDays;
 
 import java.time.Instant;
 import java.time.LocalDate;
