@@ -85,8 +85,6 @@ public class Personalisation<E extends NotificationWrapper> {
     private static final String CRLF = format("%c%c", (char) 0x0D, (char) 0x0A);
     public static final String TEMPLATE_NAME_TEMPLATE_WITH_DIRECTION_TYPE = "%s.%s.%s";
     public static final String TEMPLATE_NAME_TEMPLATE = "%s.%s";
-    public static final int MAX_DWP_RESPONSE_DAYS = 28;
-    public static final int MAX_DWP_RESPONSE_DAYS_CHILD_SUPPORT = 42;
 
     @Autowired
     protected NotificationConfig config;
@@ -742,7 +740,7 @@ public class Personalisation<E extends NotificationWrapper> {
             subscriptionType.name().toLowerCase());
     }
 
-    private static int calculateMaxDwpResponseDays(String benefitCode) {
+    public static int calculateMaxDwpResponseDays(String benefitCode) {
         if (benefitCode == "childSupport" ) {
             return MAX_DWP_RESPONSE_DAYS_CHILD_SUPPORT;
         }

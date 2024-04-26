@@ -30,6 +30,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.utility.dwpResponseUtil.calculateMaxDwpResponseDays;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -76,7 +77,6 @@ import uk.gov.hmcts.reform.sscs.reference.data.model.HearingChannel;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
-import uk.gov.hmcts.reform.sscs.utility.dwpResponseUtil;
 
 @Slf4j
 @RunWith(JUnitParamsRunner.class)
@@ -941,7 +941,7 @@ public class PersonalisationTest {
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
 
-        assertEquals(LocalDate.now().plusDays(dwpResponseUtil.calculateMaxDwpResponseDays(response.getBenefitCode())).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(APPEAL_RESPOND_DATE));
+        assertEquals(LocalDate.now().plusDays(calculateMaxDwpResponseDays(response.getBenefitCode())).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
