@@ -883,6 +883,22 @@ public class PersonalisationTest {
         assertEquals("29 July 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
+    @Test
+    public void setAppealReceivedChildSupportEventData() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(EventType.APPEAL_RECEIVED.getCcdType()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("childSupport").build()).build())
+                .events(events)
+                .build();
+
+        Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
+
+        assertNull("Welsh date is not set ",  result.get(APPEAL_RESPOND_DATE_WELSH));
+        assertEquals("12 August 2018", result.get(APPEAL_RESPOND_DATE));
+    }
 
     @Test
     public void setAppealReceivedEventData_Welsh() {
@@ -899,6 +915,23 @@ public class PersonalisationTest {
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
         assertEquals("Welsh date is set ", getWelshDate().apply(result.get(APPEAL_RESPOND_DATE), dateTimeFormatter), result.get(APPEAL_RESPOND_DATE_WELSH));
         assertEquals("29 July 2018", result.get(APPEAL_RESPOND_DATE));
+    }
+
+    @Test
+    public void setAppealReceivedChildSupportEventData_Welsh() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(EventType.APPEAL_RECEIVED.getCcdType()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("childSupport").build()).build())
+                .events(events)
+                .languagePreferenceWelsh("yes")
+                .build();
+
+        Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
+        assertEquals("Welsh date is set ", getWelshDate().apply(result.get(APPEAL_RESPOND_DATE), dateTimeFormatter), result.get(APPEAL_RESPOND_DATE_WELSH));
+        assertEquals("12 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
