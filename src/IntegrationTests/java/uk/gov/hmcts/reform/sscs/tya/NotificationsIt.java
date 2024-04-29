@@ -145,6 +145,7 @@ public class NotificationsIt extends NotificationsItBase {
             "representativeSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
             "representativeSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "hearingRouteReplace", "case_details", "case_data", "hearingRoute");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
         json = json.replace(HEARING_ROUTE_FIELD, hearingRoute);
         json = updateCommonJsonData(notificationEventType, json);
@@ -466,7 +467,7 @@ public class NotificationsIt extends NotificationsItBase {
                 GAPS_ROUTE,
                 Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "0",
@@ -479,7 +480,7 @@ public class NotificationsIt extends NotificationsItBase {
                 GAPS_ROUTE,
                 Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "0",
@@ -883,7 +884,7 @@ public class NotificationsIt extends NotificationsItBase {
                 LIST_ASSIST_ROUTE,
                 Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "1",
@@ -2441,7 +2442,7 @@ public class NotificationsIt extends NotificationsItBase {
                 LIST_ASSIST_ROUTE,
                 Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
                 "yes",
                 "no",
                 "Yes",
