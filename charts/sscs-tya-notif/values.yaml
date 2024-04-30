@@ -4,6 +4,8 @@ java:
   readinessPath: '/health/readiness'
   aadIdentityName: sscs
   ingressHost: sscs-tya-notif-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+  spotInstances:
+    enabled: true
   keyVaults:
     sscs:
       secrets:
