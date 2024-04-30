@@ -638,6 +638,14 @@ public class Personalisation<E extends NotificationWrapper> {
                 benefit, notificationWrapper, notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom());
     }
 
+    public int calculateMaxDwpResponseDays(String benefitCode) {
+        if (benefitCode != null && benefitCode.equals("childSupport")) {
+            return MAX_DWP_RESPONSE_DAYS_CHILD_SUPPORT;
+        } else {
+            return MAX_DWP_RESPONSE_DAYS;
+        }
+    }
+
     private String getEmailTemplateName(SubscriptionType subscriptionType,
                                         NotificationWrapper notificationWrapper) {
 
@@ -740,11 +748,4 @@ public class Personalisation<E extends NotificationWrapper> {
             subscriptionType.name().toLowerCase());
     }
 
-    public static int calculateMaxDwpResponseDays(String benefitCode) {
-        if (benefitCode != null && benefitCode.equals("childSupport")) {
-            return MAX_DWP_RESPONSE_DAYS_CHILD_SUPPORT;
-        } else {
-            return MAX_DWP_RESPONSE_DAYS;
-        }
-    }
 }
