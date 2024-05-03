@@ -5,7 +5,7 @@ java:
   aadIdentityName: sscs
   ingressHost: sscs-tya-notif-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   spotInstances:
-    enabled: true
+    enabled: false
   keyVaults:
     sscs:
       secrets:
