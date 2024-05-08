@@ -146,7 +146,7 @@ public class TrackYourAppealNotificationsApplication {
     }
 
     @Bean
-    @ConditionalOnProperty("spring.flyway.enabled")
+    @ConditionalOnProperty(name = "feature.bypass-notifications-service.enabled", havingValue = "false", matchIfMissing = true)
     public JobFactory jobFactory(ApplicationContext context, FlywayMigrationInitializer flywayInitializer) {
         return (new QuartzConfiguration()).jobFactory(context);
     }
