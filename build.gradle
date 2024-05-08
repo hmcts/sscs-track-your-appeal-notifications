@@ -361,7 +361,7 @@ dependencies {
     implementation group: 'com.github.hmcts', name: 'sscs-common', version: '5.4.0'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '5.2.5'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
+    implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.6.0-test', {
         exclude group: "uk.gov.hmcts.reform", module:"properties-volume-spring-boot-starter"
     }
 
