@@ -1637,11 +1637,11 @@ spring:
       accept-case-insensitive-properties: true
 
 job.scheduler:
-  autoStart: #{not ${BYPASS_NOTIFICATIONS_SERVICE:true}}
+  autoStart: false
   quartzProperties:
     org.quartz:
       scheduler:
-        autoStartup: #{not ${BYPASS_NOTIFICATIONS_SERVICE:true}}
+        autoStartup: false
         instanceId: AUTO
         idleWaitTime: ${JOB_SCHEDULER_POLL_INTERVAL:10000}
       dataSource:
