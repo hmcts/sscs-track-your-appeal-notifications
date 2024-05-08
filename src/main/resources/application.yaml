@@ -36,10 +36,10 @@ logging:
   level:
     org.springframework.orm.jpa: INFO
     org.springframework.transaction: INFO
-    org.quartz.impl: INFO
-    org.quartz.plugins: INFO
-    org.quartz.core.QuartzScheduler: INFO
-    org.quartz.QuartzScheduler: INFO
+    org.quartz.impl: DEBUG
+    org.quartz.plugins: DEBUG
+    org.quartz.core.QuartzScheduler: DEBUG
+    org.quartz.QuartzScheduler: DEBUG
     uk.gov.hmcts.fortifyclient: INFO
 
 core_case_data:
