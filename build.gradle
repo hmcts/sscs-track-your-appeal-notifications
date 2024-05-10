@@ -363,6 +363,7 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
         exclude group: "uk.gov.hmcts.reform", module:"properties-volume-spring-boot-starter"
+        exclude group: "org.quartz-scheduler", module:"quartz-jobs"
     }
 
     implementation group: 'org.json', name: 'json', version: '20230618'
