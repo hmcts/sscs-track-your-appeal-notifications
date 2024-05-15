@@ -5,10 +5,9 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.GAPS;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_TO_HANDLE;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_TO_HANDLE_POSTHEARINGS_A;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_TO_HANDLE_POSTHEARINGS_B;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DEATH_OF_APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_GRANTED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_REFUSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROVIDE_APPOINTEE_DETAILS;
 
 import java.util.Optional;
@@ -73,8 +72,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
     }
 
     private boolean shouldActionPostponementBeNotified(SscsCaseDataWrapper callback) {
-        return (POSTPONEMENT_GRANTED.equals(callback.getNotificationEventType()) || POSTPONEMENT_REFUSED.equals(callback.getNotificationEventType()))
-            && !ProcessRequestAction.SEND_TO_JUDGE.getValue().equals(
+        return ACTION_POSTPONEMENT_REQUEST.equals(callback.getNotificationEventType())
+                && !ProcessRequestAction.SEND_TO_JUDGE.getValue().equals(
                 callback.getOldSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected());
     }
 

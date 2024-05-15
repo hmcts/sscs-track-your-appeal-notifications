@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 
 public class BundledNotificationsConfigTestIt extends AbstractNotificationConfigTest {
     private static final Set<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES_IGNORED = EnumSet.of(
+        ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADMIN_CORRECTION_HEADER,
         CORRECTION_GRANTED,
@@ -29,9 +30,7 @@ public class BundledNotificationsConfigTestIt extends AbstractNotificationConfig
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
         ISSUE_ADJOURNMENT_NOTICE,
-        ISSUE_ADJOURNMENT_NOTICE_WELSH,
-        POSTPONEMENT_GRANTED,
-        POSTPONEMENT_REFUSED
+        ISSUE_ADJOURNMENT_NOTICE_WELSH
     );
     private static final Set<AppealHearingType> APPEAL_HEARING_TYPES = Set.of(PAPER, ORAL);
     private static final Set<HearingRoute> HEARING_ROUTE_TYPES = Set.of(HearingRoute.GAPS, HearingRoute.LIST_ASSIST);
