@@ -300,7 +300,7 @@ public class CcdNotificationWrapperTest {
     @Parameters({"APPEAL_LAPSED","HMCTS_APPEAL_LAPSED","DWP_APPEAL_LAPSED","APPEAL_WITHDRAWN","EVIDENCE_RECEIVED",
         "POSTPONEMENT","HEARING_BOOKED","SYA_APPEAL_CREATED","VALID_APPEAL_CREATED",
         "RESEND_APPEAL_CREATED", "APPEAL_RECEIVED", "ADJOURNED", "ISSUE_FINAL_DECISION_WELSH",
-        "PROCESS_AUDIO_VIDEO", "PROCESS_AUDIO_VIDEO_WELSH", "POSTPONEMENT_GRANTED", "POSTPONEMENT_REFUSED", "ACTION_POSTPONEMENT_REQUEST_WELSH",
+        "PROCESS_AUDIO_VIDEO", "PROCESS_AUDIO_VIDEO_WELSH", "ACTION_POSTPONEMENT_REQUEST", "ACTION_POSTPONEMENT_REQUEST_WELSH",
         "APPEAL_DORMANT", "DWP_RESPONSE_RECEIVED", "STRUCK_OUT", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "DIRECTION_ISSUED", "DIRECTION_ISSUED_WELSH"})
     public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
@@ -337,7 +337,7 @@ public class CcdNotificationWrapperTest {
         "APPEAL_DORMANT, paper", "APPEAL_DORMANT, oral", "ADJOURNED, paper", "ADJOURNED, oral", "POSTPONEMENT, paper", "POSTPONEMENT, oral",
         "EVIDENCE_RECEIVED, paper", "EVIDENCE_RECEIVED, oral", "APPEAL_WITHDRAWN, paper", "STRUCK_OUT, oral", "STRUCK_OUT, paper", "DIRECTION_ISSUED, oral", "DIRECTION_ISSUED, paper",
         "DIRECTION_ISSUED_WELSH, oral", "DIRECTION_ISSUED_WELSH, paper", "DWP_UPLOAD_RESPONSE, paper",
-        "PROCESS_AUDIO_VIDEO, oral", "PROCESS_AUDIO_VIDEO_WELSH, paper", "POSTPONEMENT_GRANTED, paper", "POSTPONEMENT_REFUSED, paper", "ACTION_POSTPONEMENT_REQUEST_WELSH, paper",
+        "PROCESS_AUDIO_VIDEO, oral", "PROCESS_AUDIO_VIDEO_WELSH, paper", "ACTION_POSTPONEMENT_REQUEST, paper", "ACTION_POSTPONEMENT_REQUEST_WELSH, paper",
         "DWP_UPLOAD_RESPONSE, oral", "HEARING_BOOKED, oral", "HEARING_BOOKED, paper",  "HEARING_REMINDER, oral", "HEARING_REMINDER, paper",
         "ISSUE_ADJOURNMENT_NOTICE, paper", "ISSUE_ADJOURNMENT_NOTICE_WELSH, oral"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointeeAndJointParty(NotificationEventType notificationEventType, String hearingType) {

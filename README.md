@@ -139,4 +139,3 @@ Using Shell:
 ```
 
 The output will be located in the folder build\renders.
-
