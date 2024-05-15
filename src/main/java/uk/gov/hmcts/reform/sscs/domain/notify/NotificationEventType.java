@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 @AllArgsConstructor
 public enum NotificationEventType {
     ACTION_HEARING_RECORDING_REQUEST(EventType.ACTION_HEARING_RECORDING_REQUEST, true, true, true, false, false, 0),
-    ACTION_POSTPONEMENT_REQUEST(EventType.ACTION_POSTPONEMENT_REQUEST, true, true, true, true, false, 0),
     ACTION_POSTPONEMENT_REQUEST_WELSH(EventType.ACTION_POSTPONEMENT_REQUEST_WELSH, true, true, true, true, false, 0),
     ADJOURNED(EventType.ADJOURNED, true, false, false, false, false, 0),
     ADMIN_APPEAL_WITHDRAWN(EventType.ADMIN_APPEAL_WITHDRAWN, true, true, true, false, false, 0),
@@ -57,6 +56,8 @@ public enum NotificationEventType {
     PERMISSION_TO_APPEAL_REFUSED(EventType.PERMISSION_TO_APPEAL_REFUSED, true, true, true, false, false, 0),
     PERMISSION_TO_APPEAL_REQUEST(EventType.PERMISSION_TO_APPEAL_REQUEST,true, true, true, false, false, 0),
     POSTPONEMENT(EventType.POSTPONED, true, false, false, false, false, 0),
+    POSTPONEMENT_GRANTED(EventType.POSTPONEMENT_GRANTED, true, true, true, true, false, 0),
+    POSTPONEMENT_REFUSED(EventType.POSTPONEMENT_REFUSED, true, true, true, true, false, 0),
     PROCESS_AUDIO_VIDEO(EventType.PROCESS_AUDIO_VIDEO, true, true, true, false, false, 0),
     PROCESS_AUDIO_VIDEO_WELSH(EventType.PROCESS_AUDIO_VIDEO_WELSH, true, true, true, false, false, 0),
     PROVIDE_APPOINTEE_DETAILS(EventType.PROVIDE_APPOINTEE_DETAILS, true, true, true, true, false, 0),

@@ -108,17 +108,18 @@ public final class NotificationEventTypeLists {
         );
 
     public static final Set<NotificationEventType> EVENT_TYPES_NOT_FOR_WELSH_CASES = EnumSet.of(
-        ACTION_POSTPONEMENT_REQUEST,
+        ACTION_POSTPONEMENT_REQUEST_WELSH,
         DECISION_ISSUED,
         DIRECTION_ISSUED,
         ISSUE_ADJOURNMENT_NOTICE,
         ISSUE_FINAL_DECISION,
+        POSTPONEMENT_GRANTED,
+        POSTPONEMENT_REFUSED,
         PROCESS_AUDIO_VIDEO
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_MANDATORY_LETTERS = EnumSet.of(
         ACTION_HEARING_RECORDING_REQUEST,
-        ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADMIN_APPEAL_WITHDRAWN,
         ADMIN_CORRECTION_HEADER,
@@ -169,7 +170,6 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_BUNDLED_LETTER = EnumSet.of(
-        ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADMIN_CORRECTION_HEADER,
         CORRECTION_GRANTED,
@@ -184,6 +184,8 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION_WELSH,
         LIBERTY_TO_APPLY_GRANTED,
         LIBERTY_TO_APPLY_REFUSED,
+        POSTPONEMENT_GRANTED,
+        POSTPONEMENT_REFUSED,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         SET_ASIDE_GRANTED,
@@ -207,7 +209,6 @@ public final class NotificationEventTypeLists {
 
     public static final Set<NotificationEventType> DOCMOSIS_LETTERS = EnumSet.of(
         ACTION_HEARING_RECORDING_REQUEST,
-        ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADMIN_APPEAL_WITHDRAWN,
         ADMIN_CORRECTION_HEADER,
@@ -240,6 +241,8 @@ public final class NotificationEventTypeLists {
         PERMISSION_TO_APPEAL_REFUSED,
         PERMISSION_TO_APPEAL_REQUEST,
         POSTPONEMENT,
+        POSTPONEMENT_GRANTED,
+        POSTPONEMENT_REFUSED,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
@@ -271,7 +274,6 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_ALL_ENTITIES = EnumSet.of(
-        ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADJOURNED,
         ADMIN_APPEAL_WITHDRAWN,
@@ -297,6 +299,8 @@ public final class NotificationEventTypeLists {
         LIBERTY_TO_APPLY_GRANTED,
         LIBERTY_TO_APPLY_REFUSED,
         POSTPONEMENT,
+        POSTPONEMENT_GRANTED,
+        POSTPONEMENT_REFUSED,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         REVIEW_AND_SET_ASIDE,
@@ -438,7 +442,6 @@ public final class NotificationEventTypeLists {
 
     public static final Set<NotificationEventType> EVENTS_WITH_SUBSCRIPTION_TYPE_DOCMOSIS_TEMPLATES = EnumSet.of(
         ACTION_HEARING_RECORDING_REQUEST,
-        ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADMIN_APPEAL_WITHDRAWN,
         ADMIN_CORRECTION_HEADER,
@@ -456,6 +459,8 @@ public final class NotificationEventTypeLists {
         HEARING_BOOKED,
         HMCTS_APPEAL_LAPSED,
         POSTPONEMENT,
+        POSTPONEMENT_GRANTED,
+        POSTPONEMENT_REFUSED,
         ISSUE_ADJOURNMENT_NOTICE,
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
@@ -486,7 +491,6 @@ public final class NotificationEventTypeLists {
 
     public static final Set<NotificationEventType> EVENTS_FOR_REPRESENTATIVE_PERSONALISATION = EnumSet.of(
         ACTION_HEARING_RECORDING_REQUEST,
-        ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADJOURNED,
         ADMIN_APPEAL_WITHDRAWN,
@@ -517,6 +521,8 @@ public final class NotificationEventTypeLists {
         LIBERTY_TO_APPLY_REFUSED,
         NON_COMPLIANT,
         POSTPONEMENT,
+        POSTPONEMENT_GRANTED,
+        POSTPONEMENT_REFUSED,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
