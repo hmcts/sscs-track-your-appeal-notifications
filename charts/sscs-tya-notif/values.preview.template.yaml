@@ -18,6 +18,8 @@ java:
         - docmosis-api-key
         - notification-key
         - notification-test-key
+        - name: app-insights-connection-string
+          alias: app-insights-connection-string
   environment:
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
