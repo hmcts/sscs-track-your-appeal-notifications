@@ -32,7 +32,8 @@ public class SaveCorrespondenceAsyncService {
     private long initialDelay;
 
     @Async
-    @Retryable(maxAttemptsExpression = "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true, maxDelayExpression = "#{${letterAsync.maxDelay}}"))
+    @Retryable(maxAttemptsExpression = "#{environment['letterAsync.maxAttempts']}", backoff = @Backoff(delayExpression = "#{environment['letterAsync.delay']}", multiplierExpression = "#{environment['letterAsync.multiplier']}",
+        random = true, maxDelayExpression = "#{environment['letterAsync.maxDelay']}"))
     public void saveLetter(NotificationClient client, String notificationId, Correspondence correspondence, String ccdCaseId) throws NotificationClientException {
 
         RetryContext context = RetrySynchronizationManager.getContext();
