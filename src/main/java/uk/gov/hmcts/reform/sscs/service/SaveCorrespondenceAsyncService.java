@@ -43,7 +43,8 @@ public class SaveCorrespondenceAsyncService {
                 // Using  Thread.sleep here as it's already running in async and not blocking end user requests. Using CompletableFuture is too complex for this.
                 Thread.sleep(initialDelay);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                log.warn("Thread was interrupted while applying a sleep to get letter pdf for case id : {} ", ccdCaseId);
+                Thread.currentThread().interrupt();
             }
         }
         try {
