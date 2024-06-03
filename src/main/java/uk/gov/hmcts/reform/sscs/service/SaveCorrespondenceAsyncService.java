@@ -1,7 +1,10 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import java.util.concurrent.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.RetryContext;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -25,9 +28,23 @@ public class SaveCorrespondenceAsyncService {
         this.ccdNotificationsPdfService = ccdNotificationsPdfService;
     }
 
+    @Value("${letterAsync.initialDelay}")
+    private long initialDelay;
+
     @Async
-    @Retryable(maxAttemptsExpression = "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
+    @Retryable(maxAttemptsExpression = "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true, maxDelayExpression = "#{${letterAsync.maxDelay}}"))
     public void saveLetter(NotificationClient client, String notificationId, Correspondence correspondence, String ccdCaseId) throws NotificationClientException {
+
+        RetryContext context = RetrySynchronizationManager.getContext();
+        if (context != null && context.getRetryCount() == 0) {
+            log.debug("delaying by {} milliseconds before making first attempt to get letter pdf for case id : {}",initialDelay, ccdCaseId);
+            try {
+                // Using  Thread.sleep here as it's already running in async and not blocking end user requests. Using CompletableFuture is too complex for this.
+                Thread.sleep(initialDelay);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
         try {
             final byte[] pdfForLetter = client.getPdfForLetter(notificationId);
             log.info("Using merge letter correspondence V2 to upload letter correspondence for {} ", ccdCaseId);
