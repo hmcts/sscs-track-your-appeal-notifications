@@ -15,6 +15,4 @@ public class LetterAsyncConfigProperties {
     private double multiplier;
     private long maxDelay;
     private long initialDelay;
-
-    // getters and setters
 }
