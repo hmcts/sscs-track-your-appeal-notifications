@@ -23,7 +23,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandat
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +39,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
+import uk.gov.hmcts.reform.sscs.utility.StringUtils;
 
 @Service
 @Slf4j
@@ -130,13 +130,20 @@ public class NotificationService {
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper) {
         overrideNotificationType(notificationWrapper);
         String subscriptionTypes = notificationWrapper.getSubscriptionsBasedOnNotificationType().stream()
-            .map(sub -> String.format("Party: %s, Entity %s, Party Id %s, Subscription Type %s, Subscription %s",
-                Optional.ofNullable(sub.getParty()).map(Object::getClass).orElse(null),
-                Optional.ofNullable(sub.getEntity()).map(Object::getClass).orElse(null),
-                sub.getPartyId(),
-                sub.getSubscriptionType(),
-                sub.getSubscription()))
+            .map(sub -> {
+                if (sub.getSubscription() != null) {
+                        return String.format("Subscription Type %s, SubscribeEmail %s Email %s SubscribeSMS %s Mobile %s",
+                            sub.getSubscriptionType(),
+                            sub.getSubscription().getSubscribeEmail(),
+                            StringUtils.getMaskedEmail(sub.getSubscription().getEmail()),
+                            sub.getSubscription().getSubscribeSms(),
+                            StringUtils.getMaskedMobile(sub.getSubscription().getMobile()));
+                    }
+                return String.format("Subscription Type %s", sub.getSubscriptionType());
+            }
+            )
             .collect(Collectors.joining("\n", "\n", ""));
+
         log.info("Processing for the Notification Type {} and Case Id {} the following subscriptions: {}",
             notificationWrapper.getNotificationType(),
             notificationWrapper.getCaseId(),

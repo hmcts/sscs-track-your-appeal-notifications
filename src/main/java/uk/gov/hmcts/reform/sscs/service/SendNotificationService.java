@@ -48,6 +48,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
+import uk.gov.hmcts.reform.sscs.utility.StringUtils;
 import uk.gov.service.notify.NotificationClientException;
 
 @Service
@@ -178,7 +179,7 @@ public class SendNotificationService {
                 );
         log.info("In sendSmsNotification method notificationSender is available {} ", notificationSender != null);
 
-        notificationLog(notification, "sms", notification.getMobile(), wrapper);
+        notificationLog(notification, "sms", StringUtils.getMaskedMobile(notification.getMobile()), wrapper);
 
         return notificationHandler.sendNotification(wrapper, smsTemplateId, "SMS", sendNotification);
     }
@@ -196,9 +197,11 @@ public class SendNotificationService {
                             wrapper.getNewSscsCaseData()
                     );
 
-            log.info("In sendEmailNotification method notificationSender is available {} ", notificationSender != null);
 
-            notificationLog(notification, "email", notification.getEmail(), wrapper);
+            log.info("In sendEmailNotification method notificationSender is available {} ", notificationSender != null);
+            notificationLog(notification, "email",
+                    StringUtils.getMaskedEmail(notification.getEmail()),
+                    wrapper);
 
             return notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
         }
