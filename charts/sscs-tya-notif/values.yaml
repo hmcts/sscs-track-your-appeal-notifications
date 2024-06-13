@@ -6,6 +6,8 @@ java:
   autoscaling:
     enabled: false
   ingressHost: sscs-tya-notif-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+  spotInstances:
+    enabled: false
   keyVaults:
     sscs:
       secrets:
