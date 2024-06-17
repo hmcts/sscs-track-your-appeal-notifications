@@ -201,10 +201,8 @@ dependencyManagement {
             entry 'spring-cloud-openfeign-core'
         }
 
-        //CVE-2022-25857
-        dependencySet(group: 'org.yaml', version: '1.33') {
-            entry 'snakeyaml'
-        }
+        //CVE-2022-1471
+        dependency group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 
         //CVE-2021-42550
         dependencySet(group: 'ch.qos.logback', version: '1.2.11') {
@@ -358,7 +356,7 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '5.3.15'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '5.4.0'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '5.2.5'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
