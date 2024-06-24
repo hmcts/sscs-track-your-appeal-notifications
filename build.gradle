@@ -123,7 +123,8 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/sscs/TrackYourAppealNotificationsApplication.java," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/servicebus/messaging/**," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/config/**," +
-                "src/main/java/uk/gov/hmcts/reform/sscs/utils/GetAllTemplatesFromNotify.java,"
+                "src/main/java/uk/gov/hmcts/reform/sscs/utils/GetAllTemplatesFromNotify.java," +
+                "src/main/java/uk/gov/hmcts/reform/sscs/service/SaveCorrespondenceAsyncService.java,"
         property "sonar.host.url", "https://sonar.reform.hmcts.net/"
         property "sonar.pitest.mode", "reuseReport"
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
