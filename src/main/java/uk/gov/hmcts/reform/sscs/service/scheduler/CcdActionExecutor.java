@@ -30,7 +30,7 @@ public class CcdActionExecutor extends BaseActionExecutor<String> {
 
     @Override
     protected void updateCase(Long caseId, SscsCaseDataWrapper wrapper, IdamTokens idamTokens) {
-        updateCcdCaseService.updateCaseV2(caseId, wrapper.getNotificationEventType().getId(), "CCD Case", "Notification Service updated case", idamTokens, sscsCaseData -> {
+        updateCcdCaseService.updateCaseV2(caseId, wrapper.getNotificationEventType().getId(), "CCD Case", "Notification Service updated case", idamTokens, sscsCaseDetails -> {
         });
     }
 
