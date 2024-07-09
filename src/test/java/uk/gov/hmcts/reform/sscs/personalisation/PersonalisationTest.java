@@ -1118,7 +1118,7 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void givenHearingData_welshFormattedDataIsCorrect() {
+    public void givenHearingDate_welshFormattedDateIsCorrect() {
         LocalDate hearingDate = LocalDate.parse("2022-11-30");
         Hearing hearing = createHearing(hearingDate);
 
