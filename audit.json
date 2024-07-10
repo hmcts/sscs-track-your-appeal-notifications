@@ -19,5 +19,12 @@
   "10096_Timestamp Disclosure - Unix_http://sscs-tya-notif-aat.service.core-compute-aat.internal_GET" : "ignore",
   "10096_Timestamp Disclosure - Unix_http://sscs-tya-notif-aat.service.core-compute-aat.internal/_GET" : "ignore",
   "10049_Storable and Cacheable Content_http://sscs-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore",
-  "10112_Session Management Response Identified_http://sscs-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore"
+  "10112_Session Management Response Identified_http://sscs-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore",
+  "10038_Content Security Policy (CSP) Header Not Set_http://****-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
+  "100000_A Server Error response code was returned by the server_http://****-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
+  "10063_Permissions Policy Header Not Set_http://****-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
+  "10036_Server Leaks Version Information via \"Server\" HTTP Response Header Field_http://****-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
+  "100001_Unexpected Content-Type was returned_http://****-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
+  "10049_Non-Storable Content_http://****-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore"
 }
+
