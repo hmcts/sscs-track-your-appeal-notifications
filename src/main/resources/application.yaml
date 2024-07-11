@@ -1626,7 +1626,9 @@ spring:
   config:
     activate:
       on-profile: default
-    import: application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
+    import:
+     - application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
+     - "optional:configtree:/mnt/secrets/cmc/"
   flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
   jackson:
     deserialization:
