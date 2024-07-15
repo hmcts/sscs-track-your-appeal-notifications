@@ -1,6 +1,6 @@
 spring:
   config:
-    import: "optional:configtree:/mnt/secrets/sscs/"
+    import: "optional:configtree:/mnt/secrets/hmc/,optional:configtree:/mnt/secrets/sscs/"
   application:
     name: TyaNotificationsService
   main:
