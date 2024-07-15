@@ -1,8 +1,6 @@
 server.port: ${PORT:8081}
 
 spring:
-  config:
-    import: "optional:configtree:/mnt/secrets/sscs-track-your-appeal-notifications/"
   application:
     name: TyaNotificationsService
   datasource:
@@ -29,6 +27,7 @@ spring:
       log-abandoned: true
       abandon-when-percentage-full: 0
 
+spring.config.import: optional:configtree:/mnt/secrets/sscs/
 spring.main.allow-bean-definition-overriding: true  # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 
 springdoc:
