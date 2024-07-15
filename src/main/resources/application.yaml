@@ -1,6 +1,8 @@
 server.port: ${PORT:8081}
 
 spring:
+  config:
+    import: optional:configtree:/mnt/secrets/sscs/
   application:
     name: TyaNotificationsService
   datasource:
@@ -27,7 +29,6 @@ spring:
       log-abandoned: true
       abandon-when-percentage-full: 0
 
-spring.config.import: optional:configtree:/mnt/secrets/sscs/
 spring.main.allow-bean-definition-overriding: true  # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 
 springdoc:
@@ -1629,7 +1630,7 @@ spring:
       on-profile: default
     import:
       - application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
-      - "optional:configtree:/mnt/secrets/sscs/"
+      - optional:configtree:/mnt/secrets/sscs/
 
   flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
   jackson:
@@ -1681,7 +1682,7 @@ judicial-ref:
 # integration & functional profile
 spring:
   config:
-    import: "optional:configtree:/mnt/secrets/sscs/"
+    import: optional:configtree:/mnt/secrets/sscs/
     activate:
       on-profile: integration, functional
   autoconfigure.exclude:
