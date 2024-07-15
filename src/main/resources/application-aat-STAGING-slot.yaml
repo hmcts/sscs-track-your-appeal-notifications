@@ -1,3 +1,9 @@
 ---
+spring:
+  config:
+    import: "optional:configtree:/mnt/secrets/sscs/"
+  application:
+    name: TyaNotificationsService
+
 job.scheduler:
   autoStart: true

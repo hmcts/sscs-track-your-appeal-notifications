@@ -1628,9 +1628,7 @@ spring:
   config:
     activate:
       on-profile: default
-    import:
-      - application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
-      - "optional:configtree:/mnt/secrets/sscs/"
+    import: application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
 
   flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
   jackson:
