@@ -1,9 +1,8 @@
-package uk.gov.hmcts.reform.sscs.smoke.smoketest;
+package uk.gov.hmcts.reform.sscs.smoke;
 
 import io.restassured.RestAssured;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
 
 public class GetSmokeCase {
 
