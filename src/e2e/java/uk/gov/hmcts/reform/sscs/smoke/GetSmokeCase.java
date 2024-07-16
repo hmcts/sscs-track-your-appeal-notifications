@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 public class GetSmokeCase {
 
     private final String appUrl = System.getenv("TEST_URL");
+
     @Test
     public void givenASmokeCase_retrieveFromCcd() {
         RestAssured.baseURI = appUrl;
