@@ -1682,7 +1682,7 @@ spring:
   config:
     import: "optional:configtree:/mnt/secrets/sscs/"
     activate:
-      on-profile: integration, functional
+      on-profile: integration, functional, smoke
   autoconfigure.exclude:
     - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   flyway.enabled: false
