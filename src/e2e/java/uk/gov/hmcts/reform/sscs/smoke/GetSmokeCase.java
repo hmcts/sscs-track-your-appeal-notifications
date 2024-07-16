@@ -3,11 +3,12 @@ package uk.gov.hmcts.reform.sscs.smoke;
 import io.restassured.RestAssured;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 
+@ActiveProfiles("smoke")
 public class GetSmokeCase {
 
     private final String appUrl = System.getenv("TEST_URL");
-
     @Test
     public void givenASmokeCase_retrieveFromCcd() {
         RestAssured.baseURI = appUrl;
