@@ -1,11 +1,10 @@
-package uk.gov.hmcts.reform.sscs.smoke;
+package uk.gov.hmcts.reform.sscs.smoke.smoketest;
 
 import io.restassured.RestAssured;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("smoke")
 public class GetSmokeCase {
 
     private final String appUrl = System.getenv("TEST_URL");
