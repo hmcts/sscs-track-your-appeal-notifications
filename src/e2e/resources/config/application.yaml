@@ -1,8 +1,6 @@
 spring:
   config:
     import: "optional:configtree:/mnt/secrets/sscs/"
-    activate:
-      on-profile: smoke
   application:
     name: TyaNotificationsService
   main:
