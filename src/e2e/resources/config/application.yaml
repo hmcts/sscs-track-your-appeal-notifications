@@ -1,0 +1,7 @@
+spring:
+  config:
+    import: optional:configtree:/mnt/secrets/sscs/
+  application:
+    name: TyaNotificationsService
+  main:
+    allow-bean-definition-overriding: true
