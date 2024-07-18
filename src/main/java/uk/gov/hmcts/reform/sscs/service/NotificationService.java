@@ -5,7 +5,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.LIST_ASSIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_ACTION_FURTHER_EVIDENCE;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_FOR_DORMANT_CASES;
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -127,66 +126,35 @@ public class NotificationService {
         }
     }
 
-    private String getSubscriptionTypesLogString(NotificationWrapper notificationWrapper){
-        String logString = "";
-        for(SubscriptionWithType list: notificationWrapper.getSubscriptionsBasedOnNotificationType()){
-            String p = String.format("Party: %s, Entity %s, Party Id %s, Subscription Type %s, Subscription %s",
-                    Optional.ofNullable(list.getParty().getClass()).orElse(null),
-            Optional.ofNullable(list.getEntity().getClass()).orElse(null),
-            list.getPartyId(),
-            list.getSubscriptionType(),
-            (list.getSubscription().getWantSmsNotifications() +
-                    list.getSubscription().getTya() +
-                    StringUtils.left(list.getSubscription().getEmail(),3) + "..." + list.getSubscription().getEmail().substring(list.getSubscription().getEmail().indexOf("@"),list.getSubscription().getEmail().indexOf("@")+3) + "..." +
-                    StringUtils.right(list.getSubscription().getMobile(),4) +
-                    list.getSubscription().getSubscribeEmail() +
-                    list.getSubscription().getSubscribeSms() +
-                    list.getSubscription().getReason() +
-                    list.getSubscription().getLastLoggedIntoMya()));
-
-            logString+=p;
-        }
-        return logString;
-    }
-
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper) {
         overrideNotificationType(notificationWrapper);
         String subscriptionTypes = notificationWrapper.getSubscriptionsBasedOnNotificationType().stream()
-            .map(sub -> String.format("Subscription Type %s, Subscription %s",
+            .map(sub -> String.format("Party: %s, Entity %s, Party Id %s, Subscription Type %s, Subscription %s",
+                Optional.ofNullable(sub.getParty()).map(Object::getClass).orElse(null),
+                Optional.ofNullable(sub.getEntity()).map(Object::getClass).orElse(null),
+                sub.getPartyId(),
                 sub.getSubscriptionType(),
-                Optional.of(StringUtils.left(sub.getSubscription().getEmail(),3) + "..." + sub.getSubscription().getEmail().substring(sub.getSubscription().getEmail().indexOf("@"),sub.getSubscription().getEmail().indexOf("@")+3) + "...").orElse(null) +
-                Optional.of(StringUtils.right(sub.getSubscription().getMobile(),4)).orElse("") +
-                sub.getSubscription().getSubscribeEmail() +
-                sub.getSubscription().getSubscribeSms()))
+                sub.getSubscription()))
             .collect(Collectors.joining("\n", "\n", ""));
-
         log.info("Processing for the Notification Type {} and Case Id {} the following subscriptions: {}",
             notificationWrapper.getNotificationType(),
             notificationWrapper.getCaseId(),
-            subscriptionTypes
-                );
+            subscriptionTypes);
 
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
                     && isValidNotification(notificationWrapper, subscriptionWithType)) {
                 sendNotification(notificationWrapper, subscriptionWithType);
-                resendLastNotification(notificationWrapper, subscriptionWithType);
+
+                if (subscriptionWithType.getSubscription() != null
+                        && NotificationEventType.SUBSCRIPTION_UPDATED.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())) {
+                    scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
+                }
+
             } else {
                 log.error("Is not a valid notification event {} for case id {}, not sending notification.",
                         notificationWrapper.getNotificationType().getId(), notificationWrapper.getCaseId());
             }
-        }
-    }
-
-    private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        if (subscriptionWithType.getSubscription() != null && shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
-            NotificationEventType lastEvent = NotificationEventType.getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
-                    .getValue().getEventType());
-            log.info("Resending the last notification for event {} and case id {}.", lastEvent.getId(), notificationWrapper.getCaseId());
-            scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
-            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(lastEvent);
-            sendNotification(notificationWrapper, subscriptionWithType);
-            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(NotificationEventType.SUBSCRIPTION_UPDATED);
         }
     }
 
@@ -232,13 +200,13 @@ public class NotificationService {
                     && !YesNo.YES.equals(wrapper.getNewSscsCaseData().getReissueArtifactUi().getResendToAppellant())) {
                 return false;
             }
+
             if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())
                     && !YesNo.YES.equals(wrapper.getNewSscsCaseData().getReissueArtifactUi().getResendToRepresentative())) {
                 return false;
             }
-            if (OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType()) && !isResendTo(subscriptionWithType.getPartyId(), wrapper.getNewSscsCaseData())) {
-                return false;
-            }
+
+            return !OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType()) || isResendTo(subscriptionWithType.getPartyId(), wrapper.getNewSscsCaseData());
         }
         return true;
     }
@@ -247,7 +215,7 @@ public class NotificationService {
         return nonNull(partyId)
                 && emptyIfNull(sscsCaseData.getReissueArtifactUi().getOtherPartyOptions()).stream()
                         .map(OtherPartyOption::getValue)
-                        .filter(otherPartyOptionDetails -> String.valueOf(partyId).equals(otherPartyOptionDetails.getOtherPartyOptionId()))
+                        .filter(otherPartyOptionDetails -> partyId.equals(otherPartyOptionDetails.getOtherPartyOptionId()))
                         .anyMatch(otherPartyOptionDetails -> YesNo.isYes(otherPartyOptionDetails.getResendToOtherParty()));
     }
 
@@ -259,26 +227,9 @@ public class NotificationService {
         subscriptionWithType.setSubscription(newSubscription.toBuilder().email(email).mobile(mobile).build());
     }
 
-    private boolean shouldProcessLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        return NotificationEventType.SUBSCRIPTION_UPDATED.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())
-                && hasCaseJustSubscribed(subscriptionWithType.getSubscription(), getSubscription(notificationWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType()))
-                && thereIsALastEventThatIsNotSubscriptionUpdated(notificationWrapper.getNewSscsCaseData());
-    }
-
     static Boolean hasCaseJustSubscribed(Subscription newSubscription, Subscription oldSubscription) {
         return ((oldSubscription == null || !oldSubscription.isEmailSubscribed()) && newSubscription.isEmailSubscribed()
                 || ((oldSubscription == null || !oldSubscription.isSmsSubscribed()) && newSubscription.isSmsSubscribed()));
-    }
-
-    private static boolean thereIsALastEventThatIsNotSubscriptionUpdated(final SscsCaseData newSscsCaseData) {
-        boolean thereIsALastEventThatIsNotSubscriptionUpdated = newSscsCaseData.getEvents() != null
-                && !newSscsCaseData.getEvents().isEmpty()
-                && newSscsCaseData.getEvents().get(0).getValue().getEventType() != null
-                && !SUBSCRIPTION_UPDATED.equals(newSscsCaseData.getEvents().get(0).getValue().getEventType());
-        if (!thereIsALastEventThatIsNotSubscriptionUpdated) {
-            log.info("Not re-sending the last subscription as there is no last event for ccdCaseId {}.", newSscsCaseData.getCcdCaseId());
-        }
-        return thereIsALastEventThatIsNotSubscriptionUpdated;
     }
 
     private void sendNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
@@ -376,6 +327,13 @@ public class NotificationService {
             return false;
         }
 
+        if (HEARING_BOOKED.equals(notificationType)
+                && DwpState.FINAL_DECISION_ISSUED.equals(notificationWrapper.getNewSscsCaseData().getDwpState())) {
+            log.info("Cannot complete notification {} as the notification has been fired in error for caseId {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
+            return false;
+        }
+
         if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh()
             && (EVENT_TYPES_NOT_FOR_WELSH_CASES.contains(notificationType))) {
             log.info("Cannot complete notification {} as the appeal is Welsh for caseId {}.",
@@ -389,6 +347,13 @@ public class NotificationService {
                 && !PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE.contains(processAudioVisualAction)) {
             log.info("Cannot complete notification {} since the action {} does not require a notice to be sent for caseId {}.",
                     notificationType.getId(), processAudioVisualAction, notificationWrapper.getCaseId());
+            return false;
+        }
+
+        if (POSTPONEMENT.equals(notificationType)
+                && !LIST_ASSIST.equals(notificationWrapper.getNewSscsCaseData().getSchedulingAndListingFields().getHearingRoute())) {
+            log.info("Cannot complete notification {} as the case is not set to list assist for case {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
             return false;
         }
 
@@ -415,11 +380,46 @@ public class NotificationService {
                 notificationWrapper.getSscsCaseDataWrapper().getState());
             return false;
         }
+
+        if (HEARING_BOOKED.equals(notificationType)) {
+            Hearing newHearing = notificationWrapper.getNewSscsCaseData().getLatestHearing();
+            Hearing oldHearing = notificationWrapper.getOldSscsCaseData().getLatestHearing();
+
+            if (nonNull(newHearing) && nonNull(oldHearing)) {
+                HearingDetails newHearingDetails = newHearing.getValue();
+                HearingDetails oldHearingDetails = oldHearing.getValue();
+
+                if (hasNonNullHearingDetails(oldHearingDetails, newHearingDetails)
+                        && newHearingDetails.getHearingId().equals(oldHearingDetails.getHearingId())
+                        && isHearingBookedInformationTheSame(newHearingDetails, oldHearingDetails)) {
+                    return false;
+                }
+            }
+        }
+
         log.info("Notification valid to send for case id {} and event {} in state {}",
             notificationWrapper.getCaseId(),
             notificationType.getId(),
             notificationWrapper.getSscsCaseDataWrapper().getState());
         return true;
+    }
+
+    private static boolean hasNonNullHearingDetails(HearingDetails oldHearingDetails, HearingDetails newHearingDetails) {
+        return nonNull(oldHearingDetails) && nonNull(oldHearingDetails.getHearingId())
+                && nonNull(newHearingDetails) && nonNull(newHearingDetails.getHearingId());
+    }
+
+    private boolean isHearingBookedInformationTheSame(HearingDetails newHearing, HearingDetails oldHearing) {
+        return newHearing.getHearingDateTime().equals(oldHearing.getHearingDateTime())
+                && newHearing.getEpimsId().equals(oldHearing.getEpimsId())
+                && hasHearingChannelNotChanged(newHearing, oldHearing);
+    }
+
+    private boolean hasHearingChannelNotChanged(HearingDetails newHearing, HearingDetails oldHearing) {
+        var oldHearingChannel = Optional.ofNullable(oldHearing.getHearingChannel());
+        var newHearingChannel = Optional.ofNullable(newHearing.getHearingChannel());
+
+        return oldHearingChannel.equals(newHearingChannel);
     }
 
     private boolean isDigitalCase(final NotificationWrapper notificationWrapper) {
