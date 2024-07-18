@@ -1674,6 +1674,12 @@ judicial-ref:
   api:
     url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
 ---
+# development
+spring:
+  config:
+    activate:
+      on-profile: local
+---
 # integration & functional profile
 spring:
   config:
