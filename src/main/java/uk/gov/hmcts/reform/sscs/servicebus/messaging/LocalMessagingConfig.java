@@ -27,7 +27,7 @@ public class LocalMessagingConfig {
             // DO NOT USE THIS IN PRODUCTION!
             TrustManager[] trustCerts = getTrustManagers();
 
-            SSLContext sc = SSLContext.getInstance("SSL");
+            SSLContext sc = SSLContext.getInstance("TLSv1.3");
             sc.init(null, trustCerts, new SecureRandom());
 
             return sc;
@@ -39,7 +39,6 @@ public class LocalMessagingConfig {
      * DO NOT USE THIS IN PRODUCTION!
      * This was only used for testing unverified ssl certs locally!
      */
-    @Deprecated
     private TrustManager[] getTrustManagers() {
         return new TrustManager[]{
             new X509TrustManager() {
