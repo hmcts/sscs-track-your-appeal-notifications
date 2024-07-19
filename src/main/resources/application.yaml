@@ -3,6 +3,8 @@ server.port: ${PORT:8081}
 spring:
   application:
     name: TyaNotificationsService
+  config:
+    import: optional:configtree:/mnt/secrets/sscs/
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
@@ -82,6 +84,8 @@ management:
   endpoint:
     health:
       show-details: always
+      probes:
+        enabled: true
   health:
     case-document-am-api.enabled: ${SECURE_DOC_STORE_FEATURE:false}
 
