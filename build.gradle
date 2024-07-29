@@ -43,15 +43,15 @@ pmd {
     ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
-task installLocalGitHook(type: Copy) {
+tasks.register('installLocalGitHook', Copy) {
     from new File(rootProject.rootDir, 'config/git/pre-commit')
-    into { new File(rootProject.rootDir, '.git/hooks')}
+    into { new File(rootProject.rootDir, '.git/hooks') }
     fileMode 0775
 }
 
 compileJava.dependsOn installLocalGitHook
 
-task runGitPreCommitTasks {
+tasks.register('runGitPreCommitTasks') {
     dependsOn 'test'
     dependsOn 'pmdMain'
     dependsOn 'pmdTest'
@@ -114,7 +114,7 @@ pitest {
     mutationThreshold = 75
 }
 
-sonarqube {
+sonar {
     properties {
         property "sonar.projectName", "SSCS - Track Your Appeal Notifications"
         property "sonar.projectKey", "SSCSTYANS"
@@ -246,7 +246,7 @@ sourceSets {
 
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
 
     testLogging {
@@ -254,13 +254,13 @@ tasks.withType(Test) {
     }
 }
 
-task integration(type: Test) {
+tasks.register('integration', Test) {
     group = 'verification'
     setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
     setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
 
-task smoke(type: Test) {
+tasks.register('smoke', Test) {
     group = 'verification'
     description = 'Executes non-destructive smoke tests against a running CCD and notification service'
     setTestClassesDirs(sourceSets.e2e.output.classesDirs)
@@ -269,7 +269,7 @@ task smoke(type: Test) {
     exclude "uk/gov/hmcts/reform/sscs/functional/**"
 }
 
-task functional(type: Test) {
+tasks.register('functional', Test) {
     group = 'verification'
     description = 'Executes non-destructive functional tests in AAT against a running CCD and notification service'
     setTestClassesDirs(sourceSets.e2e.output.classesDirs)
@@ -278,8 +278,8 @@ task functional(type: Test) {
     exclude("uk/gov/hmcts/reform/sscs/smoke/**", "**/*CohNotificationFunctionalTest*")
 }
 
-task fortifyScan(type: JavaExec)  {
-    main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+tasks.register('fortifyScan', JavaExec) {
+    mainClass = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
     classpath += sourceSets.test.runtimeClasspath
     jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
 }
@@ -296,13 +296,16 @@ jacocoTestReport {
     reports {
         xml.required = true
         csv.required = false
-        xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+        xml.outputLocation = layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml")
     }
 }
 
-tasks.withType(Copy).all { duplicatesStrategy 'warn' }
+tasks.withType(Copy).configureEach { duplicatesStrategy DuplicatesStrategy.WARN }
 
-project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
+project.tasks.named('sonar') {
+    dependsOn test, integration, jacocoTestReport
+}
+
 check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
@@ -311,7 +314,7 @@ integration.shouldRunAfter(test)
 functional.shouldRunAfter(checkstyleIntegrationTest)
 functional.shouldRunAfter(test)
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         eachDependency { DependencyResolveDetails details ->
             if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
@@ -330,10 +333,10 @@ dependencies {
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.9'
     implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.19'
 
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: springBoot.class.package.implementationVersion
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: springBoot.class.package.implementationVersion
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: springBoot.class.package.implementationVersion
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: springBoot.class.package.implementationVersion
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
@@ -414,7 +417,7 @@ dependencies {
 }
 
 bootJar {
-    archiveName 'track-your-appeal-notifications.jar'
+    archiveFileName = 'track-your-appeal-notifications.jar'
     manifest {
         attributes 'Implementation-Title': project.name,
                 'Implementation-Version': project.version
