@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.sscs.smoke;
 
 import io.restassured.RestAssured;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
+@Slf4j
 public class GetSmokeCase {
 
     private final String appUrl = System.getenv("TEST_URL");
@@ -12,6 +14,8 @@ public class GetSmokeCase {
     public void givenASmokeCase_retrieveFromCcd() {
         RestAssured.baseURI = appUrl;
         RestAssured.useRelaxedHTTPSValidation();
+
+        log.info("************* appUrl=" + appUrl);
 
         RestAssured
             .given()
