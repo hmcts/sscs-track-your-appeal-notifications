@@ -25,8 +25,8 @@ def secrets = [
     secret('idam-redirect', 'IDAM_OAUTH2_REDIRECT_URL'),
     secret('tya-link', 'SSCS_TRACK_YOUR_APPEAL_LINK'),
 
-    secret('sscs-s2s-secret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
-    secret('s2s-micro', 'IDAM.S2S-AUTH.MICROSERVICE'),
+    secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
+    secret('s2s-micro', 'IDAM_S2S_AUTH_MICROSERVICES'),
 
     secret('docmosis-endpoint', 'PDF_SERVICE_BASE_URL'),
     secret('docmosis-api-key', 'PDF_SERVICE_ACCESS_KEY'),
