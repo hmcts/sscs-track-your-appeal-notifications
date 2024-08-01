@@ -5,19 +5,39 @@ java:
   keyVaults:
     sscs:
       secrets:
-        - idam-api
-        - idam-oauth-user
-        - idam-redirect
-        - idam-sscs-systemupdate-user
-        - idam-sscs-systemupdate-password
+        - name: idam-api
+          alias: idam.url
+        - name: idam-oauth-user
+          alias: idam.oauth2.client.id
+        - name: idam-redirect
+          alias: idam.oauth2.redirectUrl
+        - name: idam-sscs-systemupdate-user
+          alias: idam.oauth2.user.email
+        - name: idam-sscs-systemupdate-password
+          alias: idam.oauth2.user.password
         - sscs-email-mac-secret-text
-        - idam-sscs-oauth2-client-secret
-        - sscs-s2s-secret
-        - s2s-micro
-        - evidence-share-topic-shared-access-key
-        - docmosis-api-key
-        - notification-key
-        - notification-test-key
+        - name: idam-sscs-oauth2-client-secret
+          alias: IDAM_OAUTH2_CLIENT_SECRET
+        - name: sscs-s2s-secret
+          alias: IDAM_S2S_AUTH_TOTP_SECRET
+        - name: s2s-micro
+          alias: IDAM_S2S_AUTH_MICROSERVICES
+        - name: evidence-share-topic-shared-access-key
+          alias: AMQP_PASSWORD
+        - name: docmosis-api-key
+          alias: PDF_SERVICE_ACCESS_KEY
+        - name: notification-key
+          alias: NOTIFICATION_API_KEY
+        - name: notification-test-key
+          alias: NOTIFICATION_API_TEST_KEY
+        - name: tya-notif-POSTGRES-PASS-FLEX-V15
+          alias: JOB_SCHEDULER_DB_PASSWORD
+        - name: app-insights-connection-string
+          alias: app-insights-connection-string
+        - name: sscs-email-mac-secret-text
+          alias: subscription.hmac.secret.text
+        - name: AppInsightsInstrumentationKey
+          alias: azure.application-insights.instrumentation-key
   environment:
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
