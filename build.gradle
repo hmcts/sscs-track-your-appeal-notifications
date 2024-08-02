@@ -116,7 +116,7 @@ pitest {
     mutationThreshold = 75
 }
 
-sonar {
+sonarqube {
     properties {
         property "sonar.projectName", "SSCS - Track Your Appeal Notifications"
         property "sonar.projectKey", "SSCSTYANS"
@@ -304,7 +304,7 @@ jacocoTestReport {
 
 tasks.withType(Copy).configureEach { duplicatesStrategy DuplicatesStrategy.WARN }
 
-project.tasks.named('sonar') {
+project.tasks.named('sonarqube') {
     dependsOn test, integration, jacocoTestReport
 }
 
