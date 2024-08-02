@@ -41,7 +41,7 @@ pmd {
     toolVersion = "6.55.0"
     ignoreFailures = true
     sourceSets = [sourceSets.main, sourceSets.test]
-    reportsDir = file("$project.buildDir/reports/pmd")
+    reportsDir = layout.buildDirectory.dir("reports/pmd").get().asFile
     ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
@@ -120,7 +120,7 @@ sonar {
     properties {
         property "sonar.projectName", "SSCS - Track Your Appeal Notifications"
         property "sonar.projectKey", "SSCSTYANS"
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.outputLocation}"
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/sscs/domain/**," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/TrackYourAppealNotificationsApplication.java," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/servicebus/messaging/**," +
