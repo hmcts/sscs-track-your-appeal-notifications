@@ -82,7 +82,7 @@ dependencyCheck {
     // Specifies if the build should be failed if a CVSS score above a specified level is identified.
     // range of 7-10 fails the build, anything lower and it doesn't fail the build
     failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild', 'true') == 'true' ? 7.0 : 11
-    suppressionFile = 'dependency-check-suppressions.xml'
+    suppressionFile = 'config/owasp/suppressions.xml'
 
     nvd.validForHours = 24
 
