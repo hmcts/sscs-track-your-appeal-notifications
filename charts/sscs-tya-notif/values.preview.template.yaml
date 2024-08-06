@@ -39,6 +39,7 @@ java:
         - name: AppInsightsInstrumentationKey
           alias: azure.application-insights.instrumentation-key
   environment:
+    CORE_CASE_DATA_CASE_TYPE_ID: Benefit-3806
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
     SUBSCRIPTION_NAME: "sscs-notifications-subscription-aat"
