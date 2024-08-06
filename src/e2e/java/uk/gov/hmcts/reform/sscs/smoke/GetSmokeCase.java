@@ -13,6 +13,8 @@ public class GetSmokeCase {
         RestAssured.baseURI = appUrl;
         RestAssured.useRelaxedHTTPSValidation();
 
+        System.out.println("************* appUrl=" + appUrl);
+
         RestAssured
             .given()
             .when()
