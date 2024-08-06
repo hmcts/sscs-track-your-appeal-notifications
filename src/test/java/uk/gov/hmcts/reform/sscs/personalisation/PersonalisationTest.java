@@ -346,10 +346,6 @@ public class PersonalisationTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
-            new Object[]{ACTION_POSTPONEMENT_REQUEST, APPELLANT, REGULAR, false, false, false, true},
-            new Object[]{ACTION_POSTPONEMENT_REQUEST, APPOINTEE, REGULAR, false, false, false, true},
-            new Object[]{ACTION_POSTPONEMENT_REQUEST, JOINT_PARTY, REGULAR, false, false, false, true},
-            new Object[]{ACTION_POSTPONEMENT_REQUEST, REPRESENTATIVE, REGULAR, false, false, false, true},
             new Object[]{ACTION_POSTPONEMENT_REQUEST_WELSH, APPELLANT, REGULAR, false, false, false, true},
             new Object[]{ACTION_POSTPONEMENT_REQUEST_WELSH, APPOINTEE, REGULAR, false, false, false, true},
             new Object[]{ACTION_POSTPONEMENT_REQUEST_WELSH, JOINT_PARTY, REGULAR, false, false, false, true},
@@ -441,6 +437,14 @@ public class PersonalisationTest {
             new Object[]{POSTPONEMENT, REPRESENTATIVE, ONLINE, true, true, false, true},
             new Object[]{POSTPONEMENT, REPRESENTATIVE, PAPER, true, true, false, true},
             new Object[]{POSTPONEMENT, REPRESENTATIVE, REGULAR, true, true, false, true},
+            new Object[]{POSTPONEMENT_GRANTED, APPELLANT, REGULAR, false, false, false, true},
+            new Object[]{POSTPONEMENT_GRANTED, APPOINTEE, REGULAR, false, false, false, true},
+            new Object[]{POSTPONEMENT_GRANTED, JOINT_PARTY, REGULAR, false, false, false, true},
+            new Object[]{POSTPONEMENT_GRANTED, REPRESENTATIVE, REGULAR, false, false, false, true},
+            new Object[]{POSTPONEMENT_REFUSED, APPELLANT, REGULAR, false, false, false, true},
+            new Object[]{POSTPONEMENT_REFUSED, APPOINTEE, REGULAR, false, false, false, true},
+            new Object[]{POSTPONEMENT_REFUSED, JOINT_PARTY, REGULAR, false, false, false, true},
+            new Object[]{POSTPONEMENT_REFUSED, REPRESENTATIVE, REGULAR, false, false, false, true},
             new Object[]{PROVIDE_APPOINTEE_DETAILS, APPOINTEE, REGULAR, false, false, false, true},
             new Object[]{PROVIDE_APPOINTEE_DETAILS, REPRESENTATIVE, REGULAR, false, false, false, true},
             new Object[]{REQUEST_FOR_INFORMATION, APPELLANT, ONLINE, false, false, false, true},
