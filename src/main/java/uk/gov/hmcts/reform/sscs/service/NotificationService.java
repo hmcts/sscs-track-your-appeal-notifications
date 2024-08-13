@@ -5,7 +5,6 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.LIST_ASSIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_ACTION_FURTHER_EVIDENCE;
@@ -146,23 +145,16 @@ public class NotificationService {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
                     && isValidNotification(notificationWrapper, subscriptionWithType)) {
                 sendNotification(notificationWrapper, subscriptionWithType);
-                resendLastNotification(notificationWrapper, subscriptionWithType);
+
+                if (subscriptionWithType.getSubscription() != null
+                        && NotificationEventType.SUBSCRIPTION_UPDATED.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())) {
+                    scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
+                }
+
             } else {
                 log.error("Is not a valid notification event {} for case id {}, not sending notification.",
                         notificationWrapper.getNotificationType().getId(), notificationWrapper.getCaseId());
             }
-        }
-    }
-
-    private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        if (subscriptionWithType.getSubscription() != null && shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
-            NotificationEventType lastEvent = NotificationEventType.getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
-                    .getValue().getEventType());
-            log.info("Resending the last notification for event {} and case id {}.", lastEvent.getId(), notificationWrapper.getCaseId());
-            scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
-            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(lastEvent);
-            sendNotification(notificationWrapper, subscriptionWithType);
-            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(NotificationEventType.SUBSCRIPTION_UPDATED);
         }
     }
 
@@ -235,26 +227,9 @@ public class NotificationService {
         subscriptionWithType.setSubscription(newSubscription.toBuilder().email(email).mobile(mobile).build());
     }
 
-    private boolean shouldProcessLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        return NotificationEventType.SUBSCRIPTION_UPDATED.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())
-                && hasCaseJustSubscribed(subscriptionWithType.getSubscription(), getSubscription(notificationWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType()))
-                && thereIsALastEventThatIsNotSubscriptionUpdated(notificationWrapper.getNewSscsCaseData());
-    }
-
     static Boolean hasCaseJustSubscribed(Subscription newSubscription, Subscription oldSubscription) {
         return ((oldSubscription == null || !oldSubscription.isEmailSubscribed()) && newSubscription.isEmailSubscribed()
                 || ((oldSubscription == null || !oldSubscription.isSmsSubscribed()) && newSubscription.isSmsSubscribed()));
-    }
-
-    private static boolean thereIsALastEventThatIsNotSubscriptionUpdated(final SscsCaseData newSscsCaseData) {
-        boolean thereIsALastEventThatIsNotSubscriptionUpdated = newSscsCaseData.getEvents() != null
-                && !newSscsCaseData.getEvents().isEmpty()
-                && newSscsCaseData.getEvents().get(0).getValue().getEventType() != null
-                && !SUBSCRIPTION_UPDATED.equals(newSscsCaseData.getEvents().get(0).getValue().getEventType());
-        if (!thereIsALastEventThatIsNotSubscriptionUpdated) {
-            log.info("Not re-sending the last subscription as there is no last event for ccdCaseId {}.", newSscsCaseData.getCcdCaseId());
-        }
-        return thereIsALastEventThatIsNotSubscriptionUpdated;
     }
 
     private void sendNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
@@ -406,11 +381,45 @@ public class NotificationService {
             return false;
         }
 
+        if (HEARING_BOOKED.equals(notificationType)) {
+            Hearing newHearing = notificationWrapper.getNewSscsCaseData().getLatestHearing();
+            Hearing oldHearing = notificationWrapper.getOldSscsCaseData().getLatestHearing();
+
+            if (nonNull(newHearing) && nonNull(oldHearing)) {
+                HearingDetails newHearingDetails = newHearing.getValue();
+                HearingDetails oldHearingDetails = oldHearing.getValue();
+
+                if (hasNonNullHearingDetails(oldHearingDetails, newHearingDetails)
+                        && newHearingDetails.getHearingId().equals(oldHearingDetails.getHearingId())
+                        && isHearingBookedInformationTheSame(newHearingDetails, oldHearingDetails)) {
+                    return false;
+                }
+            }
+        }
+
         log.info("Notification valid to send for case id {} and event {} in state {}",
             notificationWrapper.getCaseId(),
             notificationType.getId(),
             notificationWrapper.getSscsCaseDataWrapper().getState());
         return true;
+    }
+
+    private static boolean hasNonNullHearingDetails(HearingDetails oldHearingDetails, HearingDetails newHearingDetails) {
+        return nonNull(oldHearingDetails) && nonNull(oldHearingDetails.getHearingId())
+                && nonNull(newHearingDetails) && nonNull(newHearingDetails.getHearingId());
+    }
+
+    private boolean isHearingBookedInformationTheSame(HearingDetails newHearing, HearingDetails oldHearing) {
+        return newHearing.getHearingDateTime().equals(oldHearing.getHearingDateTime())
+                && newHearing.getEpimsId().equals(oldHearing.getEpimsId())
+                && hasHearingChannelNotChanged(newHearing, oldHearing);
+    }
+
+    private boolean hasHearingChannelNotChanged(HearingDetails newHearing, HearingDetails oldHearing) {
+        var oldHearingChannel = Optional.ofNullable(oldHearing.getHearingChannel());
+        var newHearingChannel = Optional.ofNullable(newHearing.getHearingChannel());
+
+        return oldHearingChannel.equals(newHearingChannel);
     }
 
     private boolean isDigitalCase(final NotificationWrapper notificationWrapper) {

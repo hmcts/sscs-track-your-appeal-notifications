@@ -542,7 +542,7 @@ public class PersonalisationTest {
         assertEquals(benefitType.equals("taxCredit") ? "" : THE_STRING, result.get(WITH_OPTIONAL_THE));
         assertEquals(benefitType.equals("taxCredit") ? "" : THE_STRING_WELSH, result.get(WITH_OPTIONAL_THE_WELSH));
 
-        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("29 July 2018", result.get(APPEAL_RESPOND_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
@@ -613,7 +613,7 @@ public class PersonalisationTest {
         assertEquals(FormType.SSCS5.equals(formType) ? "" : THE_STRING, result.get(WITH_OPTIONAL_THE));
         assertEquals(FormType.SSCS5.equals(formType) ? "" : THE_STRING_WELSH, result.get(WITH_OPTIONAL_THE_WELSH));
 
-        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("29 July 2018", result.get(APPEAL_RESPOND_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
@@ -879,9 +879,25 @@ public class PersonalisationTest {
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
 
         assertNull("Welsh date is not set ",  result.get(APPEAL_RESPOND_DATE_WELSH));
-        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("29 July 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
+    @Test
+    public void setAppealReceivedChildSupportEventData() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(EventType.APPEAL_RECEIVED.getCcdType()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("childSupport").build()).build())
+                .events(events)
+                .build();
+
+        Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
+
+        assertNull("Welsh date is not set ",  result.get(APPEAL_RESPOND_DATE_WELSH));
+        assertEquals("12 August 2018", result.get(APPEAL_RESPOND_DATE));
+    }
 
     @Test
     public void setAppealReceivedEventData_Welsh() {
@@ -897,7 +913,24 @@ public class PersonalisationTest {
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
         assertEquals("Welsh date is set ", getWelshDate().apply(result.get(APPEAL_RESPOND_DATE), dateTimeFormatter), result.get(APPEAL_RESPOND_DATE_WELSH));
-        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("29 July 2018", result.get(APPEAL_RESPOND_DATE));
+    }
+
+    @Test
+    public void setAppealReceivedChildSupportEventData_Welsh() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(EventType.APPEAL_RECEIVED.getCcdType()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("childSupport").build()).build())
+                .events(events)
+                .languagePreferenceWelsh("yes")
+                .build();
+
+        Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
+        assertEquals("Welsh date is set ", getWelshDate().apply(result.get(APPEAL_RESPOND_DATE), dateTimeFormatter), result.get(APPEAL_RESPOND_DATE_WELSH));
+        assertEquals("12 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
@@ -911,7 +944,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
         assertNull("Welsh date is set ", result.get(APPEAL_RESPOND_DATE_WELSH));
-        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("29 July 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
@@ -927,7 +960,7 @@ public class PersonalisationTest {
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
 
         assertEquals("Welsh date is set ", getWelshDate().apply(result.get(APPEAL_RESPOND_DATE), dateTimeFormatter), result.get(APPEAL_RESPOND_DATE_WELSH));
-        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("29 July 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
@@ -940,7 +973,7 @@ public class PersonalisationTest {
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED);
 
-        assertEquals(LocalDate.now().plusDays(MAX_DWP_RESPONSE_DAYS).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(APPEAL_RESPOND_DATE));
+        assertEquals(LocalDate.now().plusDays(personalisation.calculateMaxDwpResponseDays(response.getBenefitCode())).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
@@ -992,7 +1025,7 @@ public class PersonalisationTest {
 
         Map result = personalisation.setEventData(new HashMap<>(), response, JUDGE_DECISION_APPEAL_TO_PROCEED);
 
-        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("29 July 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
@@ -1008,7 +1041,7 @@ public class PersonalisationTest {
 
         Map result = personalisation.setEventData(new HashMap<>(), response, TCW_DECISION_APPEAL_TO_PROCEED);
 
-        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("29 July 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
