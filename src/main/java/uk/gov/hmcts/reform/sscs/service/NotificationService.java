@@ -390,11 +390,45 @@ public class NotificationService {
             return false;
         }
 
+        if (HEARING_BOOKED.equals(notificationType)) {
+            Hearing newHearing = notificationWrapper.getNewSscsCaseData().getLatestHearing();
+            Hearing oldHearing = notificationWrapper.getOldSscsCaseData().getLatestHearing();
+
+            if (nonNull(newHearing) && nonNull(oldHearing)) {
+                HearingDetails newHearingDetails = newHearing.getValue();
+                HearingDetails oldHearingDetails = oldHearing.getValue();
+
+                if (hasNonNullHearingDetails(oldHearingDetails, newHearingDetails)
+                        && newHearingDetails.getHearingId().equals(oldHearingDetails.getHearingId())
+                        && isHearingBookedInformationTheSame(newHearingDetails, oldHearingDetails)) {
+                    return false;
+                }
+            }
+        }
+
         log.info("Notification valid to send for case id {} and event {} in state {}",
             notificationWrapper.getCaseId(),
             notificationType.getId(),
             notificationWrapper.getSscsCaseDataWrapper().getState());
         return true;
+    }
+
+    private static boolean hasNonNullHearingDetails(HearingDetails oldHearingDetails, HearingDetails newHearingDetails) {
+        return nonNull(oldHearingDetails) && nonNull(oldHearingDetails.getHearingId())
+                && nonNull(newHearingDetails) && nonNull(newHearingDetails.getHearingId());
+    }
+
+    private boolean isHearingBookedInformationTheSame(HearingDetails newHearing, HearingDetails oldHearing) {
+        return newHearing.getHearingDateTime().equals(oldHearing.getHearingDateTime())
+                && newHearing.getEpimsId().equals(oldHearing.getEpimsId())
+                && hasHearingChannelNotChanged(newHearing, oldHearing);
+    }
+
+    private boolean hasHearingChannelNotChanged(HearingDetails newHearing, HearingDetails oldHearing) {
+        var oldHearingChannel = Optional.ofNullable(oldHearing.getHearingChannel());
+        var newHearingChannel = Optional.ofNullable(newHearing.getHearingChannel());
+
+        return oldHearingChannel.equals(newHearingChannel);
     }
 
     private boolean isDigitalCase(final NotificationWrapper notificationWrapper) {
