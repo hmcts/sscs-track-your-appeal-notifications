@@ -381,6 +381,15 @@ public class NotificationService {
             return false;
         }
 
+        String actionPostponementRequestSelected = notificationWrapper.getNewSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected();
+        if (ACTION_POSTPONEMENT_REQUEST.equals(notificationType)
+                && ProcessRequestAction.REFUSE_ON_THE_DAY.getValue().equals(actionPostponementRequestSelected)
+        ) {
+            log.info("Notification not triggered because Action postponement request with refuse on the day selected for case id {}",
+                    notificationWrapper.getCaseId());
+            return false;
+        }
+
         if (HEARING_BOOKED.equals(notificationType)) {
             Hearing newHearing = notificationWrapper.getNewSscsCaseData().getLatestHearing();
             Hearing oldHearing = notificationWrapper.getOldSscsCaseData().getLatestHearing();
