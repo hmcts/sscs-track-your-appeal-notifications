@@ -327,7 +327,7 @@ configurations.configureEach {
 }
 
 dependencies {
-    implementation group: 'commons-io', name: 'commons-io', version: '2.15.0'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.16.1'
 
     implementation group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.22.3'
@@ -388,7 +388,7 @@ dependencies {
 
     implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
 
-    implementation group: 'commons-io', name: 'commons-io', version: '2.15.0'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.16.1'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
 
     implementation group: 'net.minidev', name: 'accessors-smart', version: '2.5.0'
@@ -412,7 +412,7 @@ dependencies {
         exclude group: 'commons-io', module: 'commons-io'
     }
 
-    integrationTestImplementation group: 'commons-io', name: 'commons-io', version: '2.15.0'
+    integrationTestImplementation group: 'commons-io', name: 'commons-io', version: '2.16.1'
 
     runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator'
 }
