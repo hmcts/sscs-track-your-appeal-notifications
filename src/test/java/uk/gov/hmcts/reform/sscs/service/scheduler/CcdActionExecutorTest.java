@@ -11,6 +11,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_A
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDateTime;
 import java.util.function.Consumer;
@@ -73,7 +74,7 @@ public class CcdActionExecutorTest {
                         .serializationInclusion(JsonInclude.Include.NON_ABSENT);
 
         final ObjectMapper mapper = objectMapperBuilder.createXmlMapper(false).build();
-        mapper.registerModule(new JavaTimeModule());
+        mapper.registerModule(new Jdk8Module()).registerModule(new JavaTimeModule());
 
         final SscsCaseCallbackDeserializer deserializer = new SscsCaseCallbackDeserializer(mapper);
 

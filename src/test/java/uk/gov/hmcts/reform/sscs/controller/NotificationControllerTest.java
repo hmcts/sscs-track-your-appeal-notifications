@@ -10,6 +10,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class NotificationControllerTest {
                         .serializationInclusion(JsonInclude.Include.NON_ABSENT);
 
         mapper = objectMapperBuilder.createXmlMapper(false).build();
-        mapper.registerModule(new JavaTimeModule());
+        mapper.registerModule(new Jdk8Module()).registerModule(new JavaTimeModule());
 
         deserializer = new SscsCaseCallbackDeserializer(mapper);
 

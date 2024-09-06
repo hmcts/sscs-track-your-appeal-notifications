@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
@@ -90,7 +92,10 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
 
     private String buildCcdNode(SscsCaseDetails caseDetails, String jobName) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.valueToTree(caseDetails);
+        JsonNode jsonNode = mapper
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule())
+            .valueToTree(caseDetails);
         ObjectNode node2 = (ObjectNode) jsonNode;
         ObjectNode node = JsonNodeFactory.instance.objectNode();
 
