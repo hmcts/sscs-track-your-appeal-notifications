@@ -361,7 +361,7 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: 'b31a8a7'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '0e201d7'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '5.2.10'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
