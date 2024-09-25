@@ -55,5 +55,6 @@ java:
     HOURS_END_TIME: 23
     RUN_DB_MIGRATION_ON_STARTUP: true
     TEST_RECIPIENTS_POSTCODE: "*"
+    BYPASS_NOTIFICATIONS_SERVICE: false
   postgresql:
     enabled: true
