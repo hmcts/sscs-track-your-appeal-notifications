@@ -39,7 +39,6 @@ def secrets = [
         secret('docmosis-endpoint', 'PDF_SERVICE_BASE_URL'),
         secret('docmosis-api-key', 'PDF_SERVICE_ACCESS_KEY'),
         secret('evidence-share-topic-shared-access-key', 'AMQP_PASSWORD'),
-        secret('AppInsightsInstrumentationKey', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
 
         // Used by Kubernetes
         secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
