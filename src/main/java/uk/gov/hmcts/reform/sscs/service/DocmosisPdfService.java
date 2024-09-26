@@ -19,7 +19,7 @@ public class DocmosisPdfService  {
     public byte[] createPdf(Object pdfSummary, String templatePath) {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Map<String, Object> placeholders = objectMapper.convertValue(
+        Map<String, Object> placeholders = objectMapper.findAndRegisterModules().convertValue(
                 pdfSummary,
                 new TypeReference<Map<String, Object>>() {
                 }

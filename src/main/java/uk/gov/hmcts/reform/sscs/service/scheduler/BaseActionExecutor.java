@@ -90,7 +90,7 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
 
     private String buildCcdNode(SscsCaseDetails caseDetails, String jobName) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.valueToTree(caseDetails);
+        JsonNode jsonNode = mapper.findAndRegisterModules().valueToTree(caseDetails);
         ObjectNode node2 = (ObjectNode) jsonNode;
         ObjectNode node = JsonNodeFactory.instance.objectNode();
 

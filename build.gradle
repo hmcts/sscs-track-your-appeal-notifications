@@ -316,17 +316,13 @@ integration.shouldRunAfter(test)
 functional.shouldRunAfter(checkstyleIntegrationTest)
 functional.shouldRunAfter(test)
 
-configurations.configureEach {
-    resolutionStrategy {
-        eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
-                details.useVersion '2.11.0'
-            }
-        }
-    }
-}
-
 dependencies {
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.17.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.17.2'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.17.2'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.17.2'
+
     implementation group: 'commons-io', name: 'commons-io', version: '2.15.0'
 
     implementation group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
@@ -361,12 +357,16 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '5.11.5'
-    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '5.2.10'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: 'dea95e3'
+    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '430a4f9'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
+    implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '865878d', {
         exclude group: "uk.gov.hmcts.reform", module:"properties-volume-spring-boot-starter"
     }
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    integrationTestCompileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: springBoot.class.package.implementationVersion
 
     implementation group: 'org.json', name: 'json', version: '20230618'
 

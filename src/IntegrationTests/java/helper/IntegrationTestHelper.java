@@ -59,7 +59,7 @@ public class IntegrationTestHelper {
     public static String updateEmbeddedJson(String json, Object value, String... keys) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Map map = objectMapper.readValue(json, Map.class);
+        Map map = objectMapper.findAndRegisterModules().readValue(json, Map.class);
         Map t = map;
         for (int i = 0; i < keys.length - 1; i++) {
             t = (Map) t.get(keys[i]);
