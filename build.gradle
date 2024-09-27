@@ -356,7 +356,7 @@ dependencies {
     implementation group: 'com.github.hmcts', name: 'ccd-client', version: '4.9.2'
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
-
+    
     implementation group: 'com.github.hmcts', name: 'sscs-common', version: 'dea95e3'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '430a4f9'
 
