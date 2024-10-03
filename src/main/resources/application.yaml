@@ -1418,7 +1418,7 @@ reminder:
 
 outOfHours:
   startHour: ${HOURS_START_TIME:6}
-  endHour: ${HOURS_END_TIME:19}
+  endHour: ${HOURS_END_TIME:3}
 
 feign:
   client:
@@ -1448,6 +1448,7 @@ feature.secure-doc-store.enabled: ${SECURE_DOC_STORE_FEATURE:false}
 feature.postHearings.enabled: ${POST_HEARINGS_FEATURE:false}
 feature.postHearingsB.enabled: ${POST_HEARINGS_B_FEATURE:false}
 feature.elinksV2.enabled: false
+feature.bypass-notifications-service.enabled: ${BYPASS_NOTIFICATIONS_SERVICE:false}
 
 letter-async:
   maxAttempts: ${LETTER_ASYNC_MAX_ATTEMPTS:10}
@@ -1628,7 +1629,6 @@ spring:
   config:
     activate:
       on-profile: default
-    import: application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
   flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
   jackson:
     deserialization:
@@ -1640,9 +1640,11 @@ spring:
       accept-case-insensitive-properties: true
 
 job.scheduler:
+  autoStart: "#{!environment['BYPASS_NOTIFICATIONS_SERVICE'] ?: 'true'}"
   quartzProperties:
     org.quartz:
       scheduler:
+        autoStartup: "#{!environment['BYPASS_NOTIFICATIONS_SERVICE'] ?: 'true'}"
         instanceId: AUTO
         idleWaitTime: ${JOB_SCHEDULER_POLL_INTERVAL:10000}
       dataSource:
