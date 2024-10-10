@@ -356,8 +356,8 @@ dependencies {
     implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '7.0.1'
 
     implementation group: 'com.github.hmcts', name: 'java-logging', version: '6.0.1'
-    implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.1.2'
-    implementation group: 'com.github.hmcts', name: 'ccd-client', version: '4.9.2'
+    implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '5.2.0'
+    implementation group: 'com.github.hmcts', name: 'ccd-client', version: '5.0.3'
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
